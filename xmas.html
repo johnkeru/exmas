@@ -1,151 +1,363 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Color Wheel Spin</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Christmas Spinner Wheel</title>
     <style>
-        canvas {
-            cursor: grab;
+        :root {
+            --primary: #264524;
+            --gold: #D4AF37;
+            --red: #C41E3A;
+            --white: #FFFFFF;
+            --bg: #f7f8f6;
         }
 
-        canvas:active {
-            cursor: grabbing;
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, Arial;
+        }
+
+        body {
+            background: linear-gradient(180deg, var(--bg), #eef6ec);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: min(900px, 96vw);
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+            align-items: start;
+        }
+
+        .card {
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.75));
+            border-radius: 18px;
+            padding: 18px;
+            box-shadow: 0 6px 30px rgba(0, 0, 0, 0.08);
+            border: 3px solid rgba(0, 0, 0, 0.03);
+        }
+
+        .wheel-wrap {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        canvas {
+            touch-action: none;
+            border-radius: 12px;
+            background: transparent;
+        }
+
+        .needle {
+            width: 0;
+            height: 0;
+            border-left: 14px solid transparent;
+            border-right: 14px solid transparent;
+            border-top: 28px solid var(--gold);
+            position: relative;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            filter: drop-shadow(0px 2px 3px rgba(0, 0, 0, 0.3));
+        }
+
+        .button {
+            background: var(--primary);
+            color: var(--white);
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .muted {
+            color: #556b5d;
+            font-size: 14px;
+        }
+
+        .winner {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 10px;
+            background: linear-gradient(90deg, rgba(212, 175, 55, 0.08), rgba(196, 30, 58, 0.03));
+            min-height: 48px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        footer {
+            grid-column: 1/-1;
+            text-align: center;
+            margin-top: 10px;
+            color: #607a68;
+        }
+
+        @media (max-width:880px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 
-<body class="flex items-center justify-center h-screen bg-gray-900">
-    <div class="flex flex-col items-center">
-        <div class="relative">
-            <!-- Arrow pointer -->
-            <div class="absolute top-[-20px] left-1/2 -translate-x-1/2 z-10">
-                <div
-                    class="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent border-b-red-500">
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>Christmas Spinner Wheel</h1>
+            <p class="lead">Click / tap and drag (flick) the wheel to spin. Force determines speed and duration — the
+                wheel slows with realistic friction.</p>
+
+            <div class="wheel-wrap">
+                <div style="position:relative;">
+                    <canvas id="wheel" width="640" height="640" aria-label="Spinner wheel" role="img"></canvas>
+                    <!-- needle -->
+                    <div style="position:absolute;left:50%;top:-2px;transform:translateX(-50%);pointer-events:none;">
+                        <div class="needle"></div>
+                    </div>
                 </div>
             </div>
-            <canvas id="wheel" width="400" height="400"></canvas>
+
+            <div style="margin-top:12px;display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+                <button id="resetBtn" class="button">Reset Wheel</button>
+                <div class="muted">Primary color: <strong style="color:var(--primary);">#264524</strong></div>
+            </div>
+
+            <div class="winner" id="winnerBox" aria-live="polite">Spin the wheel to pick a prize.</div>
         </div>
-        <p id="winner" class="text-white mt-4 text-xl font-bold">🎨 Spin the Color Wheel!</p>
+
+        <div class="card controls">
+            <div class="muted">Number of segments</div>
+            <input id="segmentsRange" type="range" min="6" max="16" value="12" />
+            <div class="muted">Use the slider to change how many segments the wheel has.</div>
+
+            <div style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:10px">
+                <div class="muted">Last stop:</div>
+                <div id="lastStop" style="font-weight:700;color:var(--primary)">—</div>
+            </div>
+        </div>
+
+        <footer>Made with ❤️ — Festive accents: gold, red, and white.</footer>
     </div>
 
     <script>
-        const canvas = document.getElementById("wheel");
-        const ctx = canvas.getContext("2d");
-        const radius = canvas.width / 2;
-        const names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack", "Karen", "Leo"];
-        const segments = names.length;
+        (function () {
+            const canvas = document.getElementById('wheel');
+            const ctx = canvas.getContext('2d');
+            const winnerBox = document.getElementById('winnerBox');
+            const resetBtn = document.getElementById('resetBtn');
+            const segmentsRange = document.getElementById('segmentsRange');
+            const lastStop = document.getElementById('lastStop');
 
-        let angle = 0;
-        let velocity = 0;
-        let isDragging = false;
-        let lastAngle = 0;
-        let lastTime = 0;
-        let spinning = true;
+            let W = canvas.width, H = canvas.height, cx = W / 2, cy = H / 2, radius = Math.min(W, H) * 0.42;
+            const primary = '#264524', gold = '#D4AF37', red = '#C41E3A', white = '#FFFFFF';
 
-        // Draw wheel
-        function drawWheel() {
-            for (let i = 0; i < segments; i++) {
-                const start = (i * 2 * Math.PI) / segments;
-                const end = ((i + 1) * 2 * Math.PI) / segments;
+            let segments = 12;
+            let labels = [];
 
-                ctx.beginPath();
-                ctx.moveTo(radius, radius);
-                ctx.arc(radius, radius, radius, start, end);
-                ctx.fillStyle = `hsl(${(i / segments) * 360}, 100%, 50%)`;
-                ctx.fill();
-                ctx.stroke();
-
-                // Add text (names)
-                ctx.save();
-                ctx.translate(radius, radius);
-                ctx.rotate((start + end) / 2);
-                ctx.textAlign = "right";
-                ctx.fillStyle = "#fff";
-                ctx.font = "16px sans-serif";
-                ctx.fillText(names[i], radius - 10, 5);
-                ctx.restore();
+            function pickLabels(n) {
+                const base = ['🎁 Gift', '🎄 Tree', '❄️ Snow', '🍪 Cookie', '🔔 Bell', '🧦 Stocking', '✨ Surprise', '☃️ Snowman', '🎅 Santa', '🏠 Cottage', '🌟 Star', '🍫 Chocolate'];
+                const out = [];
+                for (let i = 0; i < n; i++) out.push(base[i % base.length]);
+                return out;
             }
-        }
 
-        // Render the wheel
-        function render() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.save();
-            ctx.translate(radius, radius);
-            ctx.rotate(angle);
-            ctx.translate(-radius, -radius);
-            drawWheel();
-            ctx.restore();
-        }
+            function randomize() {
+                labels = pickLabels(segments);
+                draw();
+            }
 
-        // Animation loop
-        function animate() {
-            if (!isDragging) {
-                angle += velocity;
-                velocity *= 0.98; // friction
-                if (Math.abs(velocity) < 0.001) {
-                    velocity = 0;
-                    if (spinning) {
-                        spinning = false;
-                        showWinner();
-                    }
-                } else {
-                    spinning = true;
+            let angle = 0;
+            let angularVelocity = 0;
+            let isDragging = false;
+            let lastPointerAngle = 0;
+            let recent = [];
+
+            function draw() {
+                ctx.clearRect(0, 0, W, H);
+                const segAngle = Math.PI * 2 / segments;
+
+                for (let i = 0; i < segments; i++) {
+                    const a0 = angle + i * segAngle;
+                    const a1 = a0 + segAngle;
+
+                    ctx.beginPath();
+                    ctx.moveTo(cx, cy);
+                    ctx.arc(cx, cy, radius, a0, a1);
+                    ctx.closePath();
+                    ctx.fillStyle = i % 2 === 0 ? primary : red;
+                    ctx.fill();
+
+                    ctx.save();
+                    ctx.translate(cx, cy);
+                    const mid = a0 + segAngle / 2;
+                    ctx.rotate(mid);
+                    ctx.textAlign = 'center';
+                    ctx.fillStyle = white;
+                    ctx.font = '600 16px Arial';
+                    ctx.fillText(labels[i], radius * 0.65, 6);
+                    ctx.restore();
                 }
+
+                ctx.beginPath(); ctx.arc(cx, cy, radius * 0.36, 0, Math.PI * 2); ctx.fillStyle = primary; ctx.fill();
+                ctx.beginPath(); ctx.arc(cx, cy, radius * 0.25, 0, Math.PI * 2); ctx.fillStyle = gold; ctx.fill();
+                ctx.beginPath(); ctx.arc(cx, cy, 18, 0, Math.PI * 2); ctx.fillStyle = white; ctx.fill();
+                ctx.beginPath(); ctx.arc(cx, cy, 10, 0, Math.PI * 2); ctx.fillStyle = primary; ctx.fill();
             }
-            render();
-            requestAnimationFrame(animate);
-        }
 
-        // Get mouse angle
-        function getMouseAngle(x, y) {
-            const dx = x - radius;
-            const dy = y - radius;
-            return Math.atan2(dy, dx);
-        }
+            function resize() {
+                W = canvas.width = Math.min(800, Math.floor(window.innerWidth * 0.9));
+                H = canvas.height = W;
+                cx = W / 2;
+                cy = H / 2;
+                radius = Math.min(W, H) * 0.42;
+                draw();
+            }
+            window.addEventListener('resize', resize);
 
-        // Mouse events
-        canvas.addEventListener("mousedown", (e) => {
-            isDragging = true;
-            lastAngle = getMouseAngle(e.offsetX, e.offsetY);
-            lastTime = Date.now();
-        });
+            function getAngleForEvent(e) {
+                const rect = canvas.getBoundingClientRect();
+                const clientX = e.clientX ?? (e.touches && e.touches[0].clientX);
+                const clientY = e.clientY ?? (e.touches && e.touches[0].clientY);
+                return Math.atan2(clientY - rect.top - cy, clientX - rect.left - cx);
+            }
 
-        canvas.addEventListener("mousemove", (e) => {
-            if (isDragging) {
-                const newAngle = getMouseAngle(e.offsetX, e.offsetY);
-                const delta = newAngle - lastAngle;
+            canvas.addEventListener('pointerdown', (ev) => {
+                canvas.setPointerCapture(ev.pointerId);
+                isDragging = true;
+                recent = [];
+                lastPointerAngle = getAngleForEvent(ev);
+            });
+
+            canvas.addEventListener('pointermove', (ev) => {
+                if (!isDragging) return;
+                const a = getAngleForEvent(ev);
+                let delta = a - lastPointerAngle;
+                if (delta > Math.PI) delta -= Math.PI * 2;
+                if (delta < -Math.PI) delta += Math.PI * 2;
                 angle += delta;
-                lastAngle = newAngle;
-                const now = Date.now();
-                const dt = (now - lastTime) / 1000;
-                velocity = delta / dt;
+                lastPointerAngle = a;
+                recent.push({ t: performance.now(), delta });
+                if (recent.length > 8) recent.shift();
+                draw();
+            });
+
+            canvas.addEventListener('pointerup', (ev) => {
+                canvas.releasePointerCapture(ev.pointerId);
+                if (!isDragging) return;
+                isDragging = false;
+                if (recent.length >= 1) {
+                    let total = 0;
+                    for (let i = 0; i < recent.length; i++) total += recent[i].delta;
+                    const avgDelta = total / Math.max(1, recent.length);
+                    angularVelocity = avgDelta / (16 / 1000);
+                    const max = 60;
+                    if (angularVelocity > max) angularVelocity = max;
+                    if (angularVelocity < -max) angularVelocity = -max;
+                }
+            });
+
+            const DECEL = 1.8;
+            const SLOW_THRESHOLD = 4;
+            const SLOW_DECEL = 0.3; // Reduced deceleration for slow phase
+            const MIN_SLOW_DURATION = 2000; // Minimum slow spin duration (ms)
+            const WOBBLE_INTENSITY = 0.05; // Reduced for subtler wobble
+            let lastTime = performance.now();
+            let stopped = true;
+            let slowStartTime = null;
+
+            function update() {
+                const now = performance.now();
+                const dt = Math.min(40, now - lastTime) / 1000;
                 lastTime = now;
+
+                if (!isDragging) {
+                    if (Math.abs(angularVelocity) > 0.0005) {
+                        stopped = false;
+                        const sign = angularVelocity > 0 ? 1 : -1;
+
+                        // Apply normal deceleration or slow deceleration based on speed
+                        let currentDecel = Math.abs(angularVelocity) > SLOW_THRESHOLD ? DECEL : SLOW_DECEL;
+
+                        // Ensure slow phase lasts at least MIN_SLOW_DURATION
+                        if (Math.abs(angularVelocity) <= SLOW_THRESHOLD && slowStartTime === null) {
+                            slowStartTime = now;
+                        }
+
+                        if (Math.abs(angularVelocity) <= SLOW_THRESHOLD && now - slowStartTime < MIN_SLOW_DURATION) {
+                            currentDecel = SLOW_DECEL * (1 - (now - slowStartTime) / MIN_SLOW_DURATION);
+                        }
+
+                        angularVelocity -= sign * currentDecel * dt;
+
+                        // Prevent crossing zero
+                        if (sign === 1 && angularVelocity < 0) angularVelocity = 0;
+                        if (sign === -1 && angularVelocity > 0) angularVelocity = 0;
+
+                        // Add subtle wobble in slow phase
+                        if (Math.abs(angularVelocity) < SLOW_THRESHOLD && Math.abs(angularVelocity) > 0) {
+                            angularVelocity += (Math.random() - 0.5) * WOBBLE_INTENSITY;
+                        }
+
+                        angle += angularVelocity * dt;
+                    } else {
+                        if (!stopped) {
+                            stopped = true;
+                            angularVelocity = 0;
+                            slowStartTime = null;
+                            announceWinner();
+                        }
+                    }
+                }
+
+                draw();
+                requestAnimationFrame(update);
             }
-        });
 
-        canvas.addEventListener("mouseup", () => {
-            isDragging = false;
-        });
+            function announceWinner() {
+                const segAngle = Math.PI * 2 / segments;
+                const needleAngle = Math.PI / 2;
+                const effective = (-needleAngle - angle);
+                let normalized = effective % (Math.PI * 2);
+                if (normalized < 0) normalized += Math.PI * 2;
+                const idx = Math.floor(normalized / segAngle) % segments;
+                const label = labels[idx];
+                winnerBox.innerHTML = `<strong style="color:${red}">Winner:</strong> <span style="font-weight:800;color:${primary}"> ${label}</span>`;
+                lastStop.textContent = label;
+            }
 
-        canvas.addEventListener("mouseleave", () => {
-            isDragging = false;
-        });
+            resetBtn.addEventListener('click', () => {
+                segments = parseInt(segmentsRange.value);
+                randomize();
+                angle = 0;
+                angularVelocity = 0;
+                slowStartTime = null;
+                winnerBox.textContent = 'Spin the wheel to pick a prize.';
+                lastStop.textContent = '—';
+            });
 
-        // Show winner
-        function showWinner() {
-            // Normalize angle (arrow at top = 270 degrees / -90deg)
-            let normalized = (angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
-            let pointerAngle = (3 * Math.PI / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
-            let segmentIndex = Math.floor((pointerAngle / (2 * Math.PI)) * segments);
-            document.getElementById("winner").textContent = "🏆 Winner: " + names[segmentIndex];
-        }
+            segmentsRange.addEventListener('input', () => {
+                segments = parseInt(segmentsRange.value);
+                randomize();
+            });
 
-        render();
-        animate();
+            randomize();
+            resize();
+            lastTime = performance.now();
+            requestAnimationFrame(update);
+            canvas.addEventListener('dragstart', e => e.preventDefault());
+        })();
     </script>
 </body>
 

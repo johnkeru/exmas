@@ -1,375 +1,145 @@
-import React, { useRef, useEffect, useState } from "react";
-import Snowfall from "react-snowfall";
+import React, { useRef, useState, useEffect } from "react";
+import { motion } from "framer-motion";
 import Confetti from "react-confetti";
-import {
-  FaTree,
-  FaArrowDown,
-  FaGift,
-  FaSnowflake,
-  FaStar,
-  FaTrophy,
-} from "react-icons/fa";
-import { motion, AnimatePresence } from "framer-motion";
+import { FaRedo } from "react-icons/fa";
+import WheelCanvas from "./WheelCanvas";
 
-const ColorWheel = () => {
+const SpinnerWheel = () => {
+  const segments = 8; // Fixed to 8 segments
+  const [labels, setLabels] = useState([]);
+  const [winner, setWinner] = useState("Spin the wheel to pick a prize.");
+  const [lastStop, setLastStop] = useState("—");
+  const [showConfetti, setShowConfetti] = useState(false);
   const canvasRef = useRef(null);
-  const [winner, setWinner] = useState(null);
-  const [winnerData, setWinnerData] = useState(null);
-  // Add to state
-  const [pendingWinner, setPendingWinner] = useState(null);
-  // ✅ Make players stateful
-  const [players, setPlayers] = useState([
-    { name: "Alice", img: "https://i.pravatar.cc/150?img=1" },
-    { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
-    { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
-    { name: "Diana", img: "https://i.pravatar.cc/150?img=4" },
-    { name: "Eve", img: "https://i.pravatar.cc/150?img=5" },
-    { name: "Frank", img: "https://i.pravatar.cc/150?img=6" },
-    { name: "Grace", img: "https://i.pravatar.cc/150?img=7" },
-    { name: "Hank", img: "https://i.pravatar.cc/150?img=8" },
-    { name: "Ivy", img: "https://i.pravatar.cc/150?img=9" },
-    { name: "Jack", img: "https://i.pravatar.cc/150?img=10" },
-    { name: "Karen", img: "https://i.pravatar.cc/150?img=11" },
-    { name: "Leo", img: "https://i.pravatar.cc/150?img=12" },
-  ]);
+  const wheelState = useRef({
+    angle: 0,
+    angularVelocity: 0,
+    isDragging: false,
+    lastPointerAngle: 0,
+    recent: [],
+    stopped: true,
+    slowStartTime: null,
+  });
 
-  // ✅ Track winners
-  const [winnersList, setWinnersList] = useState([]);
+  const colors = {
+    primary: "#264524",
+    gold: "#D4AF37",
+    red: "#C41E3A",
+    white: "#FFFFFF",
+  };
 
-  const congratsMessages = [
-    "Bow down to {name}, the ULTIMATE SPIN LEGEND! 🏆",
-    "{name} just CRUSHED the holiday spin game! 🎉",
-    "All hail {name}, the SPIN-TASTIC HOLIDAY HERO! 🌟",
-    "{name}’s spin is the stuff of Christmas LEGENDS! 🎅",
-    "Move over, Santa! {name}’s the new holiday STAR! ❄️",
-  ];
+  const pickLabels = () => {
+    const base = [
+      "🎁 Gift",
+      "🎄 Tree",
+      "❄️ Snow",
+      "🍪 Cookie",
+      "🔔 Bell",
+      "🧦 Stocking",
+      "✨ Surprise",
+      "☃️ Snowman",
+    ];
+    return base.slice(0, 8); // Fixed to 8 labels
+  };
 
-  const congratsSubtexts = [
-    "The North Pole is throwing a parade for you!",
-    "Your spin’s got the elves working overtime!",
-    "Rudolph’s blushing at your epic victory!",
-    "You’ve earned a spot on the nice list FOREVER!",
-    "The whole workshop’s buzzing about your win!",
-  ];
+  const randomize = () => {
+    setLabels(pickLabels());
+    setWinner("Spin the wheel to pick a prize.");
+    setLastStop("—");
+    setShowConfetti(false);
+  };
 
-  const segments = players.length;
-  const angleRef = useRef(0);
-  const velocityRef = useRef(0);
-  const isDraggingRef = useRef(false);
-  const lastAngleRef = useRef(0);
-  const lastTimeRef = useRef(0);
-  const spinningRef = useRef(false);
-  const spinStartTimeRef = useRef(0);
-  const imagesRef = useRef([]);
+  const announceWinner = () => {
+    const segAngle = (Math.PI * 2) / segments;
+    const needleAngle = Math.PI / 2;
+    const effective = -needleAngle - wheelState.current.angle;
+    let normalized = effective % (Math.PI * 2);
+    if (normalized < 0) normalized += Math.PI * 2;
+    const idx = Math.floor(normalized / segAngle) % segments;
+    const label = labels[idx];
+    setWinner(
+      <>
+        <strong style={{ color: colors.red }}>Winner:</strong>{" "}
+        <span style={{ fontWeight: 800, color: colors.primary }}>{label}</span>
+      </>
+    );
+    setLastStop(label);
+    setShowConfetti(true);
+    setTimeout(() => setShowConfetti(false), 5000); // Confetti for 5 seconds
+  };
+
+  const handleReset = () => {
+    randomize();
+    wheelState.current.angle = 0;
+    wheelState.current.angularVelocity = 0;
+    wheelState.current.slowStartTime = null;
+  };
 
   useEffect(() => {
-    imagesRef.current = players.map((p) => {
-      const img = new Image();
-      img.src = p.img;
-      return img;
-    });
-  }, [players]);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    const ctx = canvas.getContext("2d");
-    const radius = canvas.width / 2;
-
-    const drawWheel = () => {
-      const holidayColors = [
-        "#264524",
-        "#3b6b36",
-        "#c0392b",
-        "#e1b12c",
-        "#ffffff",
-      ];
-
-      for (let i = 0; i < segments; i++) {
-        const start = (i * 2 * Math.PI) / segments;
-        const end = ((i + 1) * 2 * Math.PI) / segments;
-
-        ctx.beginPath();
-        ctx.moveTo(radius, radius);
-        ctx.arc(radius, radius, radius, start, end);
-        ctx.fillStyle = holidayColors[i % holidayColors.length];
-        ctx.fill();
-
-        ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 3;
-        ctx.stroke();
-
-        ctx.save();
-        ctx.translate(radius, radius);
-        ctx.rotate((start + end) / 2);
-
-        const img = imagesRef.current[i];
-        if (img && img.complete) {
-          ctx.save();
-          ctx.beginPath();
-          ctx.arc(radius - 80, 0, 25, 0, Math.PI * 2);
-          ctx.closePath();
-          ctx.clip();
-          ctx.drawImage(img, radius - 105, -25, 50, 50);
-          ctx.restore();
-        }
-
-        ctx.font = "bold 22px sans-serif";
-        ctx.textAlign = "right";
-        ctx.lineWidth = 4;
-        ctx.strokeStyle = "black";
-        ctx.strokeText(players[i].name, radius - 120, 8);
-        ctx.fillStyle = "white";
-        ctx.fillText(players[i].name, radius - 120, 8);
-
-        ctx.restore();
-      }
-    };
-
-    const render = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.save();
-      ctx.translate(radius, radius);
-      ctx.rotate(angleRef.current);
-      ctx.translate(-radius, -radius);
-      drawWheel();
-      ctx.restore();
-    };
-
-    const animate = (timestamp) => {
-      if (!isDraggingRef.current && spinningRef.current) {
-        const momentum = Math.abs(velocityRef.current);
-        const friction = 0.998 - Math.min(momentum * 0.0002, 0.005);
-        velocityRef.current *= friction;
-        angleRef.current += velocityRef.current;
-
-        const elapsedTime = (timestamp - spinStartTimeRef.current) / 1000;
-        const minSpinTime = Math.min(momentum * 0.5, 5);
-
-        if (
-          Math.abs(velocityRef.current) < 0.0005 &&
-          elapsedTime > minSpinTime
-        ) {
-          velocityRef.current = 0;
-          spinningRef.current = false;
-          showWinner();
-        }
-      }
-      render();
-      requestAnimationFrame(animate);
-    };
-
-    const getMouseAngle = (x, y) => {
-      const dx = x - radius;
-      const dy = y - radius;
-      return Math.atan2(dy, dx);
-    };
-
-    const showWinner = () => {
-      let normalized =
-        ((angleRef.current % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI);
-      let pointerAngle =
-        ((3 * Math.PI) / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
-      let segmentIndex = Math.floor((pointerAngle / (2 * Math.PI)) * segments);
-
-      const selected = players[segmentIndex];
-
-      // ✅ Just store winner, don't remove yet
-      setWinnerData(selected);
-      setWinner(selected.name);
-      setPendingWinner(selected);
-    };
-
-    const handleMouseDown = (e) => {
-      isDraggingRef.current = true;
-      spinningRef.current = false;
-      velocityRef.current = 0;
-      const rect = canvas.getBoundingClientRect();
-      lastAngleRef.current = getMouseAngle(
-        e.clientX - rect.left,
-        e.clientY - rect.top
-      );
-      lastTimeRef.current = Date.now();
-    };
-
-    const handleMouseMove = (e) => {
-      if (isDraggingRef.current) {
-        const rect = canvas.getBoundingClientRect();
-        const newAngle = getMouseAngle(
-          e.clientX - rect.left,
-          e.clientY - rect.top
-        );
-        const delta = newAngle - lastAngleRef.current;
-        angleRef.current += delta;
-
-        const now = Date.now();
-        const dt = (now - lastTimeRef.current) / 1000;
-        if (dt > 0) {
-          velocityRef.current = delta / dt;
-        }
-        lastAngleRef.current = newAngle;
-        lastTimeRef.current = now;
-      }
-    };
-
-    const handleMouseUp = () => {
-      if (isDraggingRef.current) {
-        isDraggingRef.current = false;
-        const momentum = Math.abs(velocityRef.current);
-        if (momentum > 0.1) {
-          velocityRef.current *= Math.min(2 + momentum * 0.2, 4);
-          if (momentum < 0.5) {
-            velocityRef.current = Math.sign(velocityRef.current) * 0.5;
-          }
-          spinningRef.current = true;
-          spinStartTimeRef.current = performance.now();
-        }
-      }
-    };
-
-    canvas.addEventListener("mousedown", handleMouseDown);
-    canvas.addEventListener("mousemove", handleMouseMove);
-    canvas.addEventListener("mouseup", handleMouseUp);
-    canvas.addEventListener("mouseleave", handleMouseUp);
-
-    render();
-    requestAnimationFrame(animate);
-
-    return () => {
-      canvas.removeEventListener("mousedown", handleMouseDown);
-      canvas.removeEventListener("mousemove", handleMouseMove);
-      canvas.removeEventListener("mouseup", handleMouseUp);
-      canvas.removeEventListener("mouseleave", handleMouseUp);
-    };
-  }, [segments, players]);
+    randomize();
+  }, []);
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#2c4a2e] via-[#4a7043] to-[#d9534f] overflow-hidden">
-      <Snowfall snowflakeCount={150} style={{ pointerEvents: "none" }} />
-
-      {/* ✅ Winners List Sidebar */}
-      <div className="absolute left-6 top-24 bg-white/20 backdrop-blur-md rounded-2xl p-4 shadow-lg w-60">
-        <h2 className="text-xl font-bold text-white mb-3">🏆 Winners</h2>
-        {winnersList.length === 0 ? (
-          <p className="text-white/70 italic">No winners yet</p>
-        ) : (
-          <ul className="flex flex-col gap-2">
-            {winnersList.map((w, i) => (
-              <li
-                key={i}
-                className="flex items-center gap-2 bg-[#264524]/70 text-white rounded-lg p-2"
-              >
-                <img
-                  src={w.img}
-                  alt={w.name}
-                  className="w-8 h-8 rounded-full border-2 border-white"
-                />
-                {w.name}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      <h1 className="absolute top-8 text-4xl font-extrabold text-white drop-shadow-lg">
-        🎄 Holiday Spin Wheel 🎅
-      </h1>
-
-      <div
-        className="absolute w-[650px] h-[650px] rounded-full animate-pulse 
-        bg-[radial-gradient(circle,rgba(255,255,255,0.6)_3px,transparent_4px)] 
-        bg-[length:40px_40px] pointer-events-none"
-      ></div>
-
-      <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
-        <FaTree className="text-[#264524] w-12 h-12 drop-shadow-lg" />
-        <FaArrowDown className="text-red-600 w-10 h-10 drop-shadow-lg" />
-      </div>
-
-      <canvas
-        ref={canvasRef}
-        width={600}
-        height={600}
-        className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_50px_rgba(255,255,255,1)] border-10 border-[#264524]"
-      />
-
-      <AnimatePresence>
-        {winner && winnerData && (
+    <div className="container w-full max-w-[900px] grid grid-cols-1 md:grid-cols-[1fr_360px] gap-5">
+      {showConfetti && (
+        <Confetti width={window.innerWidth} height={window.innerHeight} />
+      )}
+      <motion.div
+        className="card bg-gradient-to-b from-[rgba(255,255,255,0.9)] to-[rgba(255,255,255,0.75)] rounded-2xl p-5 shadow-lg border-2 border-[rgba(0,0,0,0.03)]"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h1 className="text-2xl font-bold text-[#264524]">
+          Christmas Spinner Wheel
+        </h1>
+        <p className="text-gray-600">
+          Click / tap and drag (flick) the wheel to spin. Force determines speed
+          and duration — the wheel slows with realistic friction.
+        </p>
+        <div className="wheel-wrap flex items-center justify-center p-3 relative">
+          <WheelCanvas
+            ref={canvasRef}
+            segments={segments}
+            labels={labels}
+            wheelState={wheelState}
+            colors={colors}
+            announceWinner={announceWinner}
+          />
           <motion.div
-            key="winner-popup"
-            initial={{ opacity: 0, scale: 0.3, y: 100 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.3, y: -100 }}
-            transition={{ type: "spring", stiffness: 500, damping: 25 }}
-            className="fixed inset-0 flex items-center justify-center bg-black/80 z-50"
+            className="needle w-0 h-0 border-l-[14px] border-r-[14px] border-t-[28px] border-l-transparent border-r-transparent border-t-[#D4AF37] absolute left-1/2 top-0 -translate-x-1/2"
+            style={{ filter: "drop-shadow(0px 2px 3px rgba(0,0,0,0.3))" }}
+            animate={{ rotate: [0, 5, -5, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          />
+        </div>
+        <div className="flex gap-3 items-center flex-wrap mt-3">
+          <button
+            onClick={handleReset}
+            className="button bg-[#264524] text-white px-4 py-2 rounded-lg font-semibold flex items-center gap-2 hover:bg-[#1e3a1c] transition"
           >
-            <Confetti
-              width={window.innerWidth}
-              height={window.innerHeight}
-              recycle={false}
-              numberOfPieces={300}
-            />
-            <motion.div
-              className="bg-gradient-to-br from-[#d9534f] to-[#e1b12c] rounded-3xl p-12 flex flex-col items-center gap-6 shadow-[0_0_30px_rgba(255,255,255,0.9)] border-6 border-white"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.5,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="flex items-center gap-6">
-                <img
-                  src={winnerData.img}
-                  alt={winnerData.name}
-                  className="w-48 h-48 rounded-full border-6 border-[#264524] shadow-lg"
-                />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1], y: [0, -10, 0] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 0.8,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <FaTrophy className="text-[#ffd700] w-20 h-20 drop-shadow-lg" />
-                </motion.div>
-              </div>
-              <h2 className="text-5xl font-extrabold text-white font-['Bangers'] drop-shadow-md">
-                {congratsMessages[
-                  Math.floor(Math.random() * congratsMessages.length)
-                ].replace("{name}", winnerData.name)}
-              </h2>
-              <p className="text-2xl text-white font-['Bangers'] italic">
-                {
-                  congratsSubtexts[
-                    Math.floor(Math.random() * congratsSubtexts.length)
-                  ]
-                }
-              </p>
-              <motion.button
-                whileHover={{ scale: 1.3, rotate: 5 }}
-                whileTap={{ scale: 0.9, rotate: -5 }}
-                onClick={() => {
-                  // ✅ Now remove from players and add to winners list
-                  if (pendingWinner) {
-                    setPlayers((prev) =>
-                      prev.filter((p) => p.name !== pendingWinner.name)
-                    );
-                    setWinnersList((prev) => [...prev, pendingWinner]);
-                    setPendingWinner(null);
-                  }
-                  setWinner(null);
-                }}
-                className="mt-6 bg-[#264524] text-white px-10 py-4 rounded-xl shadow-md font-bold font-['Bangers'] text-xl"
-              >
-                Spin Again, Champion!
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            <FaRedo /> Reset Wheel
+          </button>
+          <div className="muted text-[#556b5d] text-sm">
+            Primary color:{" "}
+            <strong style={{ color: colors.primary }}>#264524</strong>
+          </div>
+        </div>
+        <motion.div
+          className="winner mt-3 p-3 rounded-lg bg-gradient-to-r from-[rgba(212,175,55,0.08)] to-[rgba(196,30,58,0.03)] min-h-[48px] flex items-center gap-3"
+          aria-live="polite"
+          initial={{ scale: 0.95 }}
+          animate={{ scale: 1 }}
+          transition={{ duration: 0.3 }}
+        >
+          {winner}
+        </motion.div>
+      </motion.div>
+      <footer className="col-span-1 md:col-span-2 text-center mt-3 text-[#607a68]">
+        Made with ❤️ — Festive accents: gold, red, and white.
+      </footer>
     </div>
   );
 };
 
-export default ColorWheel;
+export default SpinnerWheel;
