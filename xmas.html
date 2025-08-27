@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Wheel Spin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        canvas {
+            cursor: grab;
+        }
+
+        canvas:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+
+<body class="flex items-center justify-center h-screen bg-gray-900">
+    <div class="flex flex-col items-center">
+        <div class="relative">
+            <!-- Arrow pointer -->
+            <div class="absolute top-[-20px] left-1/2 -translate-x-1/2 z-10">
+                <div
+                    class="w-0 h-0 border-l-[15px] border-r-[15px] border-b-[25px] border-l-transparent border-r-transparent border-b-red-500">
+                </div>
+            </div>
+            <canvas id="wheel" width="400" height="400"></canvas>
+        </div>
+        <p id="winner" class="text-white mt-4 text-xl font-bold">🎨 Spin the Color Wheel!</p>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("wheel");
+        const ctx = canvas.getContext("2d");
+        const radius = canvas.width / 2;
+        const names = ["Alice", "Bob", "Charlie", "Diana", "Eve", "Frank", "Grace", "Hank", "Ivy", "Jack", "Karen", "Leo"];
+        const segments = names.length;
+
+        let angle = 0;
+        let velocity = 0;
+        let isDragging = false;
+        let lastAngle = 0;
+        let lastTime = 0;
+        let spinning = true;
+
+        // Draw wheel
+        function drawWheel() {
+            for (let i = 0; i < segments; i++) {
+                const start = (i * 2 * Math.PI) / segments;
+                const end = ((i + 1) * 2 * Math.PI) / segments;
+
+                ctx.beginPath();
+                ctx.moveTo(radius, radius);
+                ctx.arc(radius, radius, radius, start, end);
+                ctx.fillStyle = `hsl(${(i / segments) * 360}, 100%, 50%)`;
+                ctx.fill();
+                ctx.stroke();
+
+                // Add text (names)
+                ctx.save();
+                ctx.translate(radius, radius);
+                ctx.rotate((start + end) / 2);
+                ctx.textAlign = "right";
+                ctx.fillStyle = "#fff";
+                ctx.font = "16px sans-serif";
+                ctx.fillText(names[i], radius - 10, 5);
+                ctx.restore();
+            }
+        }
+
+        // Render the wheel
+        function render() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.save();
+            ctx.translate(radius, radius);
+            ctx.rotate(angle);
+            ctx.translate(-radius, -radius);
+            drawWheel();
+            ctx.restore();
+        }
+
+        // Animation loop
+        function animate() {
+            if (!isDragging) {
+                angle += velocity;
+                velocity *= 0.98; // friction
+                if (Math.abs(velocity) < 0.001) {
+                    velocity = 0;
+                    if (spinning) {
+                        spinning = false;
+                        showWinner();
+                    }
+                } else {
+                    spinning = true;
+                }
+            }
+            render();
+            requestAnimationFrame(animate);
+        }
+
+        // Get mouse angle
+        function getMouseAngle(x, y) {
+            const dx = x - radius;
+            const dy = y - radius;
+            return Math.atan2(dy, dx);
+        }
+
+        // Mouse events
+        canvas.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            lastAngle = getMouseAngle(e.offsetX, e.offsetY);
+            lastTime = Date.now();
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                const newAngle = getMouseAngle(e.offsetX, e.offsetY);
+                const delta = newAngle - lastAngle;
+                angle += delta;
+                lastAngle = newAngle;
+                const now = Date.now();
+                const dt = (now - lastTime) / 1000;
+                velocity = delta / dt;
+                lastTime = now;
+            }
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener("mouseleave", () => {
+            isDragging = false;
+        });
+
+        // Show winner
+        function showWinner() {
+            // Normalize angle (arrow at top = 270 degrees / -90deg)
+            let normalized = (angle % (2 * Math.PI) + 2 * Math.PI) % (2 * Math.PI);
+            let pointerAngle = (3 * Math.PI / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
+            let segmentIndex = Math.floor((pointerAngle / (2 * Math.PI)) * segments);
+            document.getElementById("winner").textContent = "🏆 Winner: " + names[segmentIndex];
+        }
+
+        render();
+        animate();
+    </script>
+</body>
+
+</html>
