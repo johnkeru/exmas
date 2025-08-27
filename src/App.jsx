@@ -1,6 +1,12 @@
 import React, { useRef, useEffect, useState } from "react";
 import Snowfall from "react-snowfall";
-import { FaTree, FaArrowDown } from "react-icons/fa";
+import {
+  FaTree,
+  FaArrowDown,
+  FaGift,
+  FaSnowflake,
+  FaStar,
+} from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ColorWheel = () => {
@@ -66,7 +72,7 @@ const ColorWheel = () => {
         ctx.fill();
 
         ctx.strokeStyle = "#fff";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
         ctx.stroke();
 
         ctx.save();
@@ -77,20 +83,20 @@ const ColorWheel = () => {
         if (img && img.complete) {
           ctx.save();
           ctx.beginPath();
-          ctx.arc(radius - 60, 0, 20, 0, Math.PI * 2);
+          ctx.arc(radius - 80, 0, 25, 0, Math.PI * 2);
           ctx.closePath();
           ctx.clip();
-          ctx.drawImage(img, radius - 80, -20, 40, 40);
+          ctx.drawImage(img, radius - 105, -25, 50, 50);
           ctx.restore();
         }
 
-        ctx.font = "bold 18px sans-serif";
+        ctx.font = "bold 22px sans-serif";
         ctx.textAlign = "right";
-        ctx.lineWidth = 3;
+        ctx.lineWidth = 4;
         ctx.strokeStyle = "black";
-        ctx.strokeText(players[i].name, radius - 100, 6);
+        ctx.strokeText(players[i].name, radius - 120, 8);
         ctx.fillStyle = "white";
-        ctx.fillText(players[i].name, radius - 100, 6);
+        ctx.fillText(players[i].name, radius - 120, 8);
 
         ctx.restore();
       }
@@ -109,12 +115,12 @@ const ColorWheel = () => {
     const animate = (timestamp) => {
       if (!isDraggingRef.current && spinningRef.current) {
         const momentum = Math.abs(velocityRef.current);
-        const friction = 0.998 - Math.min(momentum * 0.0002, 0.005); // Slower decay for higher momentum
+        const friction = 0.998 - Math.min(momentum * 0.0002, 0.005);
         velocityRef.current *= friction;
         angleRef.current += velocityRef.current;
 
         const elapsedTime = (timestamp - spinStartTimeRef.current) / 1000;
-        const minSpinTime = Math.min(momentum * 0.5, 5); // Stronger spins last up to 5s
+        const minSpinTime = Math.min(momentum * 0.5, 5);
 
         if (
           Math.abs(velocityRef.current) < 0.0005 &&
@@ -184,10 +190,9 @@ const ColorWheel = () => {
         isDraggingRef.current = false;
         const momentum = Math.abs(velocityRef.current);
         if (momentum > 0.1) {
-          // Only spin if there's enough momentum
-          velocityRef.current *= Math.min(2 + momentum * 0.2, 4); // Scale momentum
+          velocityRef.current *= Math.min(2 + momentum * 0.2, 4);
           if (momentum < 0.5) {
-            velocityRef.current = Math.sign(velocityRef.current) * 0.5; // Minimum spin
+            velocityRef.current = Math.sign(velocityRef.current) * 0.5;
           }
           spinningRef.current = true;
           spinStartTimeRef.current = performance.now();
@@ -212,25 +217,40 @@ const ColorWheel = () => {
   }, [segments, players]);
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#264524] via-[#3b6b36] to-[#c0392b] overflow-hidden">
-      <Snowfall snowflakeCount={100} style={{ pointerEvents: "none" }} />
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#2c4a2e] via-[#4a7043] to-[#d9534f] overflow-hidden">
+      <Snowfall snowflakeCount={150} style={{ pointerEvents: "none" }} />
+
+      <h1 className="absolute top-8 text-4xl font-extrabold text-white drop-shadow-lg">
+        🎄 Holiday Spin Wheel 🎅
+      </h1>
 
       <div
-        className="absolute w-[480px] h-[480px] rounded-full animate-pulse 
-        bg-[radial-gradient(circle,rgba(255,255,255,0.5)_2px,transparent_3px)] 
-        bg-[length:30px_30px] pointer-events-none"
+        className="absolute w-[650px] h-[650px] rounded-full animate-pulse 
+        bg-[radial-gradient(circle,rgba(255,255,255,0.6)_3px,transparent_4px)] 
+        bg-[length:40px_40px] pointer-events-none"
       ></div>
 
-      <div className="absolute top-[110px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
-        <FaTree className="text-[#264524] w-10 h-10 drop-shadow-lg" />
-        <FaArrowDown className="text-red-500 w-8 h-8 drop-shadow-lg" />
+      <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
+        <FaTree className="text-[#264524] w-12 h-12 drop-shadow-lg" />
+        <FaArrowDown className="text-red-600 w-10 h-10 drop-shadow-lg" />
       </div>
+
+      <motion.div
+        className="absolute"
+        animate={{ rotate: 360 }}
+        transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
+      >
+        <FaGift className="text-[#c0392b] w-10 h-10 absolute top-0 left-[-340px] drop-shadow-lg" />
+        <FaSnowflake className="text-[#ffffff] w-10 h-10 absolute top-0 right-[-340px] drop-shadow-lg" />
+        <FaStar className="text-[#e1b12c] w-10 h-10 absolute bottom-[-340px] left-0 drop-shadow-lg" />
+        <FaGift className="text-[#264524] w-10 h-10 absolute bottom-[-340px] right-0 drop-shadow-lg" />
+      </motion.div>
 
       <canvas
         ref={canvasRef}
-        width={450}
-        height={450}
-        className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_35px_rgba(255,255,255,0.9)] border-8 border-[#264524]"
+        width={600}
+        height={600}
+        className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_50px_rgba(255,255,255,1)] border-10 border-[#264524]"
       />
 
       <AnimatePresence>
@@ -244,7 +264,7 @@ const ColorWheel = () => {
             className="fixed inset-0 flex items-center justify-center bg-black/60 z-50"
           >
             <motion.div
-              className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
+              className="bg-white rounded-2xl p-10 flex flex-col items-center gap-5 shadow-2xl"
               initial={{ scale: 0.7 }}
               animate={{ scale: 1 }}
               transition={{ type: "spring", stiffness: 300, damping: 15 }}
@@ -252,16 +272,16 @@ const ColorWheel = () => {
               <img
                 src={winnerData.img}
                 alt={winnerData.name}
-                className="w-28 h-28 rounded-full border-4 border-[#e1b12c] shadow-lg"
+                className="w-32 h-32 rounded-full border-4 border-[#e1b12c] shadow-lg"
               />
-              <h2 className="text-3xl font-extrabold text-[#264524]">
+              <h2 className="text-4xl font-extrabold text-[#264524]">
                 🎉 Winner: {winnerData.name} 🎄
               </h2>
               <motion.button
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={() => setWinner(null)}
-                className="mt-4 bg-[#c0392b] text-white px-6 py-2 rounded-xl shadow-md font-bold"
+                className="mt-5 bg-[#c0392b] text-white px-8 py-3 rounded-xl shadow-md font-bold"
               >
                 Close
               </motion.button>
