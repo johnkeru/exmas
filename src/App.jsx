@@ -1,11 +1,13 @@
 import React, { useRef, useEffect, useState } from "react";
 import Snowfall from "react-snowfall";
+import Confetti from "react-confetti";
 import {
   FaTree,
   FaArrowDown,
   FaGift,
   FaSnowflake,
   FaStar,
+  FaTrophy,
 } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -27,6 +29,22 @@ const ColorWheel = () => {
     { name: "Jack", img: "https://i.pravatar.cc/150?img=10" },
     { name: "Karen", img: "https://i.pravatar.cc/150?img=11" },
     { name: "Leo", img: "https://i.pravatar.cc/150?img=12" },
+  ];
+
+  const congratsMessages = [
+    "Bow down to {name}, the ULTIMATE SPIN LEGEND! 🏆",
+    "{name} just CRUSHED the holiday spin game! 🎉",
+    "All hail {name}, the SPIN-TASTIC HOLIDAY HERO! 🌟",
+    "{name}’s spin is the stuff of Christmas LEGENDS! 🎅",
+    "Move over, Santa! {name}’s the new holiday STAR! ❄️",
+  ];
+
+  const congratsSubtexts = [
+    "The North Pole is throwing a parade for you!",
+    "Your spin’s got the elves working overtime!",
+    "Rudolph’s blushing at your epic victory!",
+    "You’ve earned a spot on the nice list FOREVER!",
+    "The whole workshop’s buzzing about your win!",
   ];
 
   const segments = players.length;
@@ -257,33 +275,63 @@ const ColorWheel = () => {
         {winner && winnerData && (
           <motion.div
             key="winner-popup"
-            initial={{ opacity: 0, scale: 0.5, y: -50 }}
+            initial={{ opacity: 0, scale: 0.3, y: 100 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.5, y: 50 }}
-            transition={{ type: "spring", stiffness: 200, damping: 20 }}
-            className="fixed inset-0 flex items-center justify-center bg-black/60 z-50"
+            exit={{ opacity: 0, scale: 0.3, y: -100 }}
+            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            className="fixed inset-0 flex items-center justify-center bg-black/80 z-50"
           >
+            <Confetti
+              width={window.innerWidth}
+              height={window.innerHeight}
+              recycle={false}
+              numberOfPieces={300}
+            />
             <motion.div
-              className="bg-white rounded-2xl p-10 flex flex-col items-center gap-5 shadow-2xl"
-              initial={{ scale: 0.7 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+              className="bg-gradient-to-br from-[#d9534f] to-[#e1b12c] rounded-3xl p-12 flex flex-col items-center gap-6 shadow-[0_0_30px_rgba(255,255,255,0.9)] border-6 border-white"
+              animate={{ scale: [1, 1.1, 1] }}
+              transition={{
+                repeat: Infinity,
+                duration: 1.5,
+                ease: "easeInOut",
+              }}
             >
-              <img
-                src={winnerData.img}
-                alt={winnerData.name}
-                className="w-32 h-32 rounded-full border-4 border-[#e1b12c] shadow-lg"
-              />
-              <h2 className="text-4xl font-extrabold text-[#264524]">
-                🎉 Winner: {winnerData.name} 🎄
+              <div className="flex items-center gap-6">
+                <img
+                  src={winnerData.img}
+                  alt={winnerData.name}
+                  className="w-48 h-48 rounded-full border-6 border-[#264524] shadow-lg"
+                />
+                <motion.div
+                  animate={{ scale: [1, 1.2, 1], y: [0, -10, 0] }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                  }}
+                >
+                  <FaTrophy className="text-[#ffd700] w-20 h-20 drop-shadow-lg" />
+                </motion.div>
+              </div>
+              <h2 className="text-5xl font-extrabold text-white font-['Bangers'] drop-shadow-md">
+                {congratsMessages[
+                  Math.floor(Math.random() * congratsMessages.length)
+                ].replace("{name}", winnerData.name)}
               </h2>
+              <p className="text-2xl text-white font-['Bangers'] italic">
+                {
+                  congratsSubtexts[
+                    Math.floor(Math.random() * congratsSubtexts.length)
+                  ]
+                }
+              </p>
               <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
+                whileHover={{ scale: 1.3, rotate: 5 }}
+                whileTap={{ scale: 0.9, rotate: -5 }}
                 onClick={() => setWinner(null)}
-                className="mt-5 bg-[#c0392b] text-white px-8 py-3 rounded-xl shadow-md font-bold"
+                className="mt-6 bg-[#264524] text-white px-10 py-4 rounded-xl shadow-md font-bold font-['Bangers'] text-xl"
               >
-                Close
+                Spin Again, Champion!
               </motion.button>
             </motion.div>
           </motion.div>
