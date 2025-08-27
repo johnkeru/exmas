@@ -26,36 +26,51 @@ const WheelCanvas = forwardRef(
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, a0, a1);
         ctx.closePath();
-        ctx.fillStyle = i % 2 === 0 ? colors.primary : colors.red;
+        ctx.fillStyle = i % 2 === 0 ? colors.hollyGreen : colors.candyRed;
         ctx.fill();
 
+        // Add festive snowflake pattern
         ctx.save();
         ctx.translate(cx, cy);
         const mid = a0 + segAngle / 2;
         ctx.rotate(mid);
+        ctx.fillStyle = colors.snowWhite;
+        ctx.font = "600 18px 'Mountains of Christmas', cursive";
         ctx.textAlign = "center";
-        ctx.fillStyle = colors.white;
-        ctx.font = "600 16px Arial";
         ctx.fillText(labels[i] || "", radius * 0.65, 6);
+        // Add subtle snowflake decoration
+        ctx.font = "12px Arial";
+        ctx.fillText("❄", radius * 0.85, 6);
         ctx.restore();
       }
 
+      // Inner festive rings
       ctx.beginPath();
       ctx.arc(cx, cy, radius * 0.36, 0, Math.PI * 2);
-      ctx.fillStyle = colors.primary;
+      ctx.fillStyle = colors.hollyGreen;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(cx, cy, radius * 0.25, 0, Math.PI * 2);
-      ctx.fillStyle = colors.gold;
+      ctx.fillStyle = colors.goldenBell;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-      ctx.fillStyle = colors.white;
+      ctx.fillStyle = colors.snowWhite;
       ctx.fill();
       ctx.beginPath();
       ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-      ctx.fillStyle = colors.primary;
+      ctx.fillStyle = colors.candyRed;
       ctx.fill();
+
+      // Add glowing effect
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.strokeStyle = `rgba(255, 215, 0, 0.5)`;
+      ctx.lineWidth = 4;
+      ctx.shadowBlur = 10;
+      ctx.shadowColor = colors.goldenBell;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
     };
 
     const resize = () => {
@@ -206,8 +221,11 @@ const WheelCanvas = forwardRef(
         ref={canvasRef}
         width={640}
         height={640}
-        className="rounded-xl"
-        aria-label="Spinner wheel"
+        className="rounded-xl shadow-2xl"
+        style={{
+          background: `radial-gradient(circle, ${colors.snowWhite} 0%, ${colors.hollyGreen} 100%)`,
+        }}
+        aria-label="Christmas Spinner Wheel"
         role="img"
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
