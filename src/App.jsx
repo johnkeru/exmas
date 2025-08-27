@@ -6,21 +6,24 @@ import { FaTree, FaGift, FaSnowflake, FaArrowDown } from "react-icons/fa";
 const ColorWheel = () => {
   const canvasRef = useRef(null);
   const [winner, setWinner] = useState("🎅 Spin the Christmas Wheel!");
-  const names = [
-    "Alice",
-    "Bob",
-    "Charlie",
-    "Diana",
-    "Eve",
-    "Frank",
-    "Grace",
-    "Hank",
-    "Ivy",
-    "Jack",
-    "Karen",
-    "Leo",
+
+  // Names with dummy profile pictures
+  const players = [
+    { name: "Alice", img: "https://i.pravatar.cc/50?img=1" },
+    { name: "Bob", img: "https://i.pravatar.cc/50?img=2" },
+    { name: "Charlie", img: "https://i.pravatar.cc/50?img=3" },
+    { name: "Diana", img: "https://i.pravatar.cc/50?img=4" },
+    { name: "Eve", img: "https://i.pravatar.cc/50?img=5" },
+    { name: "Frank", img: "https://i.pravatar.cc/50?img=6" },
+    { name: "Grace", img: "https://i.pravatar.cc/50?img=7" },
+    { name: "Hank", img: "https://i.pravatar.cc/50?img=8" },
+    { name: "Ivy", img: "https://i.pravatar.cc/50?img=9" },
+    { name: "Jack", img: "https://i.pravatar.cc/50?img=10" },
+    { name: "Karen", img: "https://i.pravatar.cc/50?img=11" },
+    { name: "Leo", img: "https://i.pravatar.cc/50?img=12" },
   ];
-  const segments = names.length;
+
+  const segments = players.length;
 
   const angleRef = useRef(0);
   const velocityRef = useRef(0);
@@ -28,6 +31,17 @@ const ColorWheel = () => {
   const lastAngleRef = useRef(0);
   const lastTimeRef = useRef(0);
   const spinningRef = useRef(true);
+
+  // Preload profile images
+  const imagesRef = useRef([]);
+
+  useEffect(() => {
+    imagesRef.current = players.map((p) => {
+      const img = new Image();
+      img.src = p.img;
+      return img;
+    });
+  }, [players]);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -48,6 +62,7 @@ const ColorWheel = () => {
         const start = (i * 2 * Math.PI) / segments;
         const end = ((i + 1) * 2 * Math.PI) / segments;
 
+        // Draw segment
         ctx.beginPath();
         ctx.moveTo(radius, radius);
         ctx.arc(radius, radius, radius, start, end);
@@ -58,13 +73,32 @@ const ColorWheel = () => {
         ctx.lineWidth = 2;
         ctx.stroke();
 
+        // Draw name + image
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate((start + end) / 2);
+
+        // Profile image
+        const img = imagesRef.current[i];
+        if (img && img.complete) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(radius - 60, 0, 20, 0, Math.PI * 2);
+          ctx.closePath();
+          ctx.clip();
+          ctx.drawImage(img, radius - 80, -20, 40, 40);
+          ctx.restore();
+        }
+
+        // Name (bigger + stroked for readability)
+        ctx.font = "bold 18px sans-serif";
         ctx.textAlign = "right";
-        ctx.fillStyle = "#fff";
-        ctx.font = "bold 16px sans-serif";
-        ctx.fillText(names[i], radius - 15, 5);
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "black";
+        ctx.strokeText(players[i].name, radius - 100, 6);
+        ctx.fillStyle = "white";
+        ctx.fillText(players[i].name, radius - 100, 6);
+
         ctx.restore();
       }
     };
@@ -109,7 +143,7 @@ const ColorWheel = () => {
       let pointerAngle =
         ((3 * Math.PI) / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
       let segmentIndex = Math.floor((pointerAngle / (2 * Math.PI)) * segments);
-      setWinner(`🎁 Winner: ${names[segmentIndex]} 🎄`);
+      setWinner(`🎁 Winner: ${players[segmentIndex].name} 🎄`);
     };
 
     // Mouse events
@@ -158,7 +192,7 @@ const ColorWheel = () => {
       canvas.removeEventListener("mouseup", handleMouseUp);
       canvas.removeEventListener("mouseleave", handleMouseUp);
     };
-  }, [segments, names]);
+  }, [segments, players]);
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-800 via-red-800 to-yellow-700 overflow-hidden">
@@ -181,8 +215,8 @@ const ColorWheel = () => {
       {/* Wheel */}
       <canvas
         ref={canvasRef}
-        width={400}
-        height={400}
+        width={450}
+        height={450}
         className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_35px_rgba(255,255,255,0.9)] border-8 border-red-500"
       />
 
