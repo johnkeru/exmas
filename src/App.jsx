@@ -1,38 +1,36 @@
-// src/components/ColorWheel.jsx
 import React, { useRef, useEffect, useState } from "react";
-import Snowfall from "react-snowfall"; // snowfall effect
-import { FaTree, FaGift, FaSnowflake, FaArrowDown } from "react-icons/fa";
+import Snowfall from "react-snowfall";
+import { FaTree, FaArrowDown } from "react-icons/fa";
+import { motion, AnimatePresence } from "framer-motion";
 
 const ColorWheel = () => {
   const canvasRef = useRef(null);
-  const [winner, setWinner] = useState("🎅 Spin the Christmas Wheel!");
+  const [winner, setWinner] = useState(null);
+  const [winnerData, setWinnerData] = useState(null);
 
-  // Names with dummy profile pictures
   const players = [
-    { name: "Alice", img: "https://i.pravatar.cc/50?img=1" },
-    { name: "Bob", img: "https://i.pravatar.cc/50?img=2" },
-    { name: "Charlie", img: "https://i.pravatar.cc/50?img=3" },
-    { name: "Diana", img: "https://i.pravatar.cc/50?img=4" },
-    { name: "Eve", img: "https://i.pravatar.cc/50?img=5" },
-    { name: "Frank", img: "https://i.pravatar.cc/50?img=6" },
-    { name: "Grace", img: "https://i.pravatar.cc/50?img=7" },
-    { name: "Hank", img: "https://i.pravatar.cc/50?img=8" },
-    { name: "Ivy", img: "https://i.pravatar.cc/50?img=9" },
-    { name: "Jack", img: "https://i.pravatar.cc/50?img=10" },
-    { name: "Karen", img: "https://i.pravatar.cc/50?img=11" },
-    { name: "Leo", img: "https://i.pravatar.cc/50?img=12" },
+    { name: "Alice", img: "https://i.pravatar.cc/150?img=1" },
+    { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
+    { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
+    { name: "Diana", img: "https://i.pravatar.cc/150?img=4" },
+    { name: "Eve", img: "https://i.pravatar.cc/150?img=5" },
+    { name: "Frank", img: "https://i.pravatar.cc/150?img=6" },
+    { name: "Grace", img: "https://i.pravatar.cc/150?img=7" },
+    { name: "Hank", img: "https://i.pravatar.cc/150?img=8" },
+    { name: "Ivy", img: "https://i.pravatar.cc/150?img=9" },
+    { name: "Jack", img: "https://i.pravatar.cc/150?img=10" },
+    { name: "Karen", img: "https://i.pravatar.cc/150?img=11" },
+    { name: "Leo", img: "https://i.pravatar.cc/150?img=12" },
   ];
 
   const segments = players.length;
-
   const angleRef = useRef(0);
   const velocityRef = useRef(0);
   const isDraggingRef = useRef(false);
   const lastAngleRef = useRef(0);
   const lastTimeRef = useRef(0);
-  const spinningRef = useRef(true);
-
-  // Preload profile images
+  const spinningRef = useRef(false);
+  const spinStartTimeRef = useRef(0);
   const imagesRef = useRef([]);
 
   useEffect(() => {
@@ -50,18 +48,17 @@ const ColorWheel = () => {
 
     const drawWheel = () => {
       const holidayColors = [
-        "#264524", // main green
-        "#3b6b36", // lighter green
-        "#c0392b", // deep red
-        "#e1b12c", // gold
-        "#ffffff", // white
+        "#264524",
+        "#3b6b36",
+        "#c0392b",
+        "#e1b12c",
+        "#ffffff",
       ];
 
       for (let i = 0; i < segments; i++) {
         const start = (i * 2 * Math.PI) / segments;
         const end = ((i + 1) * 2 * Math.PI) / segments;
 
-        // Draw segment
         ctx.beginPath();
         ctx.moveTo(radius, radius);
         ctx.arc(radius, radius, radius, start, end);
@@ -72,12 +69,10 @@ const ColorWheel = () => {
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Draw name + image
         ctx.save();
         ctx.translate(radius, radius);
         ctx.rotate((start + end) / 2);
 
-        // Profile image
         const img = imagesRef.current[i];
         if (img && img.complete) {
           ctx.save();
@@ -89,7 +84,6 @@ const ColorWheel = () => {
           ctx.restore();
         }
 
-        // Name (bigger + stroked for readability)
         ctx.font = "bold 18px sans-serif";
         ctx.textAlign = "right";
         ctx.lineWidth = 3;
@@ -112,18 +106,23 @@ const ColorWheel = () => {
       ctx.restore();
     };
 
-    const animate = () => {
-      if (!isDraggingRef.current) {
+    const animate = (timestamp) => {
+      if (!isDraggingRef.current && spinningRef.current) {
+        const momentum = Math.abs(velocityRef.current);
+        const friction = 0.998 - Math.min(momentum * 0.0002, 0.005); // Slower decay for higher momentum
+        velocityRef.current *= friction;
         angleRef.current += velocityRef.current;
-        velocityRef.current *= 0.98;
-        if (Math.abs(velocityRef.current) < 0.001) {
+
+        const elapsedTime = (timestamp - spinStartTimeRef.current) / 1000;
+        const minSpinTime = Math.min(momentum * 0.5, 5); // Stronger spins last up to 5s
+
+        if (
+          Math.abs(velocityRef.current) < 0.0005 &&
+          elapsedTime > minSpinTime
+        ) {
           velocityRef.current = 0;
-          if (spinningRef.current) {
-            spinningRef.current = false;
-            showWinner();
-          }
-        } else {
-          spinningRef.current = true;
+          spinningRef.current = false;
+          showWinner();
         }
       }
       render();
@@ -142,12 +141,16 @@ const ColorWheel = () => {
       let pointerAngle =
         ((3 * Math.PI) / 2 - normalized + 2 * Math.PI) % (2 * Math.PI);
       let segmentIndex = Math.floor((pointerAngle / (2 * Math.PI)) * segments);
-      setWinner(`🎁 Winner: ${players[segmentIndex].name} 🎄`);
+
+      const selected = players[segmentIndex];
+      setWinnerData(selected);
+      setWinner(selected.name);
     };
 
-    // Mouse events
     const handleMouseDown = (e) => {
       isDraggingRef.current = true;
+      spinningRef.current = false;
+      velocityRef.current = 0;
       const rect = canvas.getBoundingClientRect();
       lastAngleRef.current = getMouseAngle(
         e.clientX - rect.left,
@@ -165,16 +168,31 @@ const ColorWheel = () => {
         );
         const delta = newAngle - lastAngleRef.current;
         angleRef.current += delta;
-        lastAngleRef.current = newAngle;
+
         const now = Date.now();
         const dt = (now - lastTimeRef.current) / 1000;
-        velocityRef.current = delta / dt;
+        if (dt > 0) {
+          velocityRef.current = delta / dt;
+        }
+        lastAngleRef.current = newAngle;
         lastTimeRef.current = now;
       }
     };
 
     const handleMouseUp = () => {
-      isDraggingRef.current = false;
+      if (isDraggingRef.current) {
+        isDraggingRef.current = false;
+        const momentum = Math.abs(velocityRef.current);
+        if (momentum > 0.1) {
+          // Only spin if there's enough momentum
+          velocityRef.current *= Math.min(2 + momentum * 0.2, 4); // Scale momentum
+          if (momentum < 0.5) {
+            velocityRef.current = Math.sign(velocityRef.current) * 0.5; // Minimum spin
+          }
+          spinningRef.current = true;
+          spinStartTimeRef.current = performance.now();
+        }
+      }
     };
 
     canvas.addEventListener("mousedown", handleMouseDown);
@@ -183,7 +201,7 @@ const ColorWheel = () => {
     canvas.addEventListener("mouseleave", handleMouseUp);
 
     render();
-    animate();
+    requestAnimationFrame(animate);
 
     return () => {
       canvas.removeEventListener("mousedown", handleMouseDown);
@@ -195,23 +213,19 @@ const ColorWheel = () => {
 
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#264524] via-[#3b6b36] to-[#c0392b] overflow-hidden">
-      {/* Falling snow effect */}
       <Snowfall snowflakeCount={100} style={{ pointerEvents: "none" }} />
 
-      {/* Sparkling lights around wheel */}
       <div
         className="absolute w-[480px] h-[480px] rounded-full animate-pulse 
         bg-[radial-gradient(circle,rgba(255,255,255,0.5)_2px,transparent_3px)] 
         bg-[length:30px_30px] pointer-events-none"
       ></div>
 
-      {/* Pointer with tree + arrow */}
       <div className="absolute top-[110px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
         <FaTree className="text-[#264524] w-10 h-10 drop-shadow-lg" />
         <FaArrowDown className="text-red-500 w-8 h-8 drop-shadow-lg" />
       </div>
 
-      {/* Wheel */}
       <canvas
         ref={canvasRef}
         width={450}
@@ -219,12 +233,42 @@ const ColorWheel = () => {
         className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_35px_rgba(255,255,255,0.9)] border-8 border-[#264524]"
       />
 
-      {/* Winner display */}
-      <p className="text-[#e1b12c] mt-6 text-2xl font-extrabold flex items-center gap-3 drop-shadow-lg animate-pulse">
-        <FaGift className="text-red-400 w-7 h-7" />
-        {winner}
-        <FaSnowflake className="text-blue-200 w-7 h-7" />
-      </p>
+      <AnimatePresence>
+        {winner && winnerData && (
+          <motion.div
+            key="winner-popup"
+            initial={{ opacity: 0, scale: 0.5, y: -50 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.5, y: 50 }}
+            transition={{ type: "spring", stiffness: 200, damping: 20 }}
+            className="fixed inset-0 flex items-center justify-center bg-black/60 z-50"
+          >
+            <motion.div
+              className="bg-white rounded-2xl p-8 flex flex-col items-center gap-4 shadow-2xl"
+              initial={{ scale: 0.7 }}
+              animate={{ scale: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            >
+              <img
+                src={winnerData.img}
+                alt={winnerData.name}
+                className="w-28 h-28 rounded-full border-4 border-[#e1b12c] shadow-lg"
+              />
+              <h2 className="text-3xl font-extrabold text-[#264524]">
+                🎉 Winner: {winnerData.name} 🎄
+              </h2>
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                onClick={() => setWinner(null)}
+                className="mt-4 bg-[#c0392b] text-white px-6 py-2 rounded-xl shadow-md font-bold"
+              >
+                Close
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
