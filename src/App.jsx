@@ -50,12 +50,11 @@ const ColorWheel = () => {
 
     const drawWheel = () => {
       const holidayColors = [
-        "#E63946",
-        "#2A9D8F",
-        "#F4A261",
-        "#264653",
-        "#F1FAEE",
-        "#A8DADC",
+        "#264524", // main green
+        "#3b6b36", // lighter green
+        "#c0392b", // deep red
+        "#e1b12c", // gold
+        "#ffffff", // white
       ];
 
       for (let i = 0; i < segments; i++) {
@@ -195,7 +194,7 @@ const ColorWheel = () => {
   }, [segments, players]);
 
   return (
-    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-green-800 via-red-800 to-yellow-700 overflow-hidden">
+    <div className="relative flex flex-col items-center justify-center min-h-screen bg-gradient-to-br from-[#264524] via-[#3b6b36] to-[#c0392b] overflow-hidden">
       {/* Falling snow effect */}
       <Snowfall snowflakeCount={100} style={{ pointerEvents: "none" }} />
 
@@ -207,8 +206,8 @@ const ColorWheel = () => {
       ></div>
 
       {/* Pointer with tree + arrow */}
-      <div className="absolute top-[10px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
-        <FaTree className="text-green-400 w-10 h-10 drop-shadow-lg" />
+      <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
+        <FaTree className="text-[#264524] w-10 h-10 drop-shadow-lg" />
         <FaArrowDown className="text-red-500 w-8 h-8 drop-shadow-lg" />
       </div>
 
@@ -217,12 +216,12 @@ const ColorWheel = () => {
         ref={canvasRef}
         width={450}
         height={450}
-        className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_35px_rgba(255,255,255,0.9)] border-8 border-red-500"
+        className="cursor-grab active:cursor-grabbing rounded-full shadow-[0_0_35px_rgba(255,255,255,0.9)] border-8 border-[#264524]"
       />
 
       {/* Winner display */}
-      <p className="text-yellow-200 mt-6 text-2xl font-extrabold flex items-center gap-3 drop-shadow-lg animate-pulse">
-        <FaGift className="text-green-300 w-7 h-7" />
+      <p className="text-[#e1b12c] mt-6 text-2xl font-extrabold flex items-center gap-3 drop-shadow-lg animate-pulse">
+        <FaGift className="text-red-400 w-7 h-7" />
         {winner}
         <FaSnowflake className="text-blue-200 w-7 h-7" />
       </p>
