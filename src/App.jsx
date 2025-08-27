@@ -206,7 +206,7 @@ const ColorWheel = () => {
       ></div>
 
       {/* Pointer with tree + arrow */}
-      <div className="absolute top-[120px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
+      <div className="absolute top-[110px] left-1/2 -translate-x-1/2 z-20 flex flex-col items-center animate-bounce">
         <FaTree className="text-[#264524] w-10 h-10 drop-shadow-lg" />
         <FaArrowDown className="text-red-500 w-8 h-8 drop-shadow-lg" />
       </div>
