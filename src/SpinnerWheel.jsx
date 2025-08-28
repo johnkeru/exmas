@@ -215,116 +215,142 @@ const SpinnerWheel = () => {
         {winner && (
           <motion.div
             className="fixed inset-0 flex items-center justify-center"
-            style={{ zIndex: 50, background: "rgba(0, 0, 0, 0.7)" }}
+            style={{ zIndex: 50, background: "rgba(0, 0, 0, 0.75)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
+            transition={{ duration: 0.5 }}
           >
             <motion.div
-              className="bg-white rounded-2xl p-10 shadow-2xl max-w-lg w-full"
+              className="bg-white rounded-3xl p-12 shadow-2xl max-w-xl w-full"
               style={{
-                fontFamily: "'Christmas Bell', cursive",
-                background: `linear-gradient(135deg, ${colors[3]} 0%, ${colors[4]} 100%)`,
-                boxShadow: "0 0 30px rgba(255, 215, 0, 0.7)",
-                border: "4px solid #FFD700",
-                animation: "pulseGlow 2s infinite",
+                fontFamily: "'Mountains of Christmas', cursive",
+                background: `linear-gradient(145deg, #FEF9E6 0%, #FFF0BA 100%)`,
+                boxShadow: "0 8px 32px rgba(163, 8, 12, 0.3)",
+                border: "6px double #A3080C",
+                position: "relative",
+                overflow: "hidden",
               }}
+              initial={{ scale: 0.8, y: 50 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 50 }}
+              transition={{ duration: 0.4, type: "spring" }}
             >
               <style>
                 {`
-                  @keyframes pulseGlow {
-                    0% { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-                    50% { border-color: #FFFF00; box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
-                    100% { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
-                  }
-                `}
+            .popup-decor::before {
+              content: '✨';
+              position: absolute;
+              top: 10px;
+              left: 20px;
+              font-size: 2rem;
+              animation: sparkle 2s infinite;
+            }
+            .popup-decor::after {
+              content: '❄️';
+              position: absolute;
+              bottom: 10px;
+              right: 20px;
+              font-size: 2rem;
+              animation: sparkle 2s infinite;
+            }
+            @keyframes sparkle {
+              0% { transform: scale(1) rotate(0deg); opacity: 0.6; }
+              50% { transform: scale(1.3) rotate(180deg); opacity: 1; }
+              100% { transform: scale(1) rotate(360deg); opacity: 0.6; }
+            }
+          `}
               </style>
-              <h2 className="text-5xl font-bold text-[#1A3C34] mb-6 flex items-center gap-3 justify-center">
-                <i className="fas fa-star text-[#FFD700]"></i> Santa’s Star! 🎅
-              </h2>
-              <div className="relative flex justify-center mb-8">
-                <motion.img
-                  src={winner.img}
-                  alt={winner.name}
-                  className="w-48 h-48 rounded-full border-4 border-[#A3080C]"
-                  animate={{
-                    y: [0, -30, 0],
-                    scale: [1, 1.15, 1],
-                    boxShadow: [
-                      "0 0 10px rgba(255, 215, 0, 0.5)",
-                      "0 0 20px rgba(255, 215, 0, 0.8)",
-                      "0 0 10px rgba(255, 215, 0, 0.5)",
-                    ],
-                  }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 1,
-                    ease: "easeInOut",
-                  }}
-                />
-                <motion.div
-                  className="absolute -top-8"
-                  animate={{ rotate: [-15, 15, -15], y: [0, -10, 0] }}
-                  transition={{ repeat: Infinity, duration: 1 }}
-                >
-                  <img
-                    src="https://www.pngarc.com/wp-content/uploads/2023/06/Red-Christmas-hat-background-png-image-1-min.png"
-                    alt="Santa Hat"
-                    className="w-24 h-24"
-                    style={{ transform: "translateX(-30px)" }}
-                  />
-                </motion.div>
-                {[...Array(5)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-3 h-3 rounded-full bg-[#FFD700]"
-                    style={{
-                      left: `${Math.random() * 80 + 10}%`,
-                      top: `${Math.random() * 80 + 10}%`,
-                    }}
+              <div className="popup-decor">
+                <h2 className="text-5xl font-bold text-[#A3080C] mb-8 flex items-center gap-4 justify-center">
+                  <i className="fas fa-crown text-[#FFD700]"></i> Christmas
+                  Champion! 🎉
+                </h2>
+                <div className="relative flex justify-center mb-10">
+                  <motion.img
+                    src={winner.img}
+                    alt={winner.name}
+                    className="w-64 h-64 rounded-full border-6 border-[#FFD700] shadow-lg"
                     animate={{
-                      scale: [0, 1.5, 0],
-                      opacity: [0, 1, 0],
+                      y: [0, -20, 0],
+                      scale: [1, 1.1, 1],
+                      boxShadow: [
+                        "0 0 15px rgba(255, 215, 0, 0.4)",
+                        "0 0 25px rgba(255, 215, 0, 0.7)",
+                        "0 0 15px rgba(255, 215, 0, 0.4)",
+                      ],
                     }}
                     transition={{
                       repeat: Infinity,
-                      duration: 1.5,
-                      delay: Math.random() * 0.5,
+                      duration: 1.2,
+                      ease: "easeInOut",
                     }}
                   />
-                ))}
-              </div>
-              <p className="text-3xl text-[#A3080C] mb-8 text-center">
-                🎁 Hooray!{" "}
-                <span className="font-bold text-[#1A3C34]">{winner.name}</span>{" "}
-                is Santa’s favorite this Christmas! 🎄
-              </p>
-              <div className="flex justify-center gap-4">
-                <motion.button
-                  onClick={handleExclude}
-                  className="bg-[#1A3C34] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#0F2A22] transition"
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  aria-label="Exclude winner from future spins"
-                >
-                  <i className="fas fa-ban"></i> Exclude
-                </motion.button>
-                <motion.button
-                  onClick={handleClose}
-                  className="bg-[#A3080C] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition"
-                  whileHover={{
-                    scale: 1.1,
-                    boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-                  }}
-                  whileTap={{ scale: 0.9 }}
-                  aria-label="Close winner popup"
-                >
-                  <i className="fas fa-times"></i> Close
-                </motion.button>
+                  <motion.div
+                    className="absolute -top-12"
+                    animate={{ rotate: [-10, 10, -10], y: [0, -15, 0] }}
+                    transition={{ repeat: Infinity, duration: 1.5 }}
+                  >
+                    <img
+                      src="https://www.pngarc.com/wp-content/uploads/2023/06/Red-Christmas-hat-background-png-image-1-min.png"
+                      alt="Santa Hat"
+                      className="w-32 h-32"
+                      style={{ transform: "translateX(-40px)" }}
+                    />
+                  </motion.div>
+                  {[...Array(6)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-4 h-4 rounded-full bg-[#A3080C]"
+                      style={{
+                        left: `${Math.random() * 80 + 10}%`,
+                        top: `${Math.random() * 80 + 10}%`,
+                      }}
+                      animate={{
+                        scale: [0, 1.8, 0],
+                        opacity: [0, 1, 0],
+                      }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 2,
+                        delay: Math.random() * 0.7,
+                      }}
+                    />
+                  ))}
+                </div>
+                <p className="text-4xl text-[#1A3C34] mb-10 text-center">
+                  🎅 Ho Ho Ho!{" "}
+                  <span className="font-bold text-[#A3080C]">
+                    {winner.name}
+                  </span>{" "}
+                  lights up Christmas! 🎄
+                </p>
+                <div className="flex justify-center gap-6">
+                  <motion.button
+                    onClick={handleExclude}
+                    className="bg-[#A3080C] text-white font-bold py-4 px-8 rounded-xl flex items-center gap-3 hover:bg-[#7A1626] transition shadow-md"
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 20px rgba(255, 215, 0, 0.6)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Exclude winner from future spins"
+                  >
+                    <i className="fas fa-ban"></i> Exclude
+                  </motion.button>
+                  <motion.button
+                    onClick={handleClose}
+                    className="bg-[#1A3C34] text-white font-bold py-4 px-8 rounded-xl flex items-center gap-3 hover:bg-[#0F2A22] transition shadow-md"
+                    whileHover={{
+                      scale: 1.05,
+                      boxShadow: "0 0 20px rgba(255, 215, 0, 0.6)",
+                    }}
+                    whileTap={{ scale: 0.95 }}
+                    aria-label="Close winner popup"
+                  >
+                    <i className="fas fa-times"></i> Close
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </motion.div>
