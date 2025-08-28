@@ -237,11 +237,21 @@ const SpinnerWheel = () => {
               announceWinner={announceWinner}
             />
             <motion.div
-              className="absolute w-0 h-0 border-l-[12px] border-r-[12px] border-t-[24px] border-l-transparent border-r-transparent border-t-[#FFD700] left-1/2 top-0 -translate-x-1/2"
-              style={{ filter: "drop-shadow(0 3px 4px rgba(0,0,0,0.3))" }}
-              animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }}
+              className="absolute left-1/2 top-0 -translate-x-1/2 flex flex-col items-center"
+              animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
               transition={{ repeat: Infinity, duration: 1.2 }}
-            />
+            >
+              {/* Arrow shaft: bigger and chunky */}
+              <div
+                className="w-4 h-10 bg-red-600 rounded"
+                style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
+              />
+              {/* Arrow tip: bigger for proportion */}
+              <div
+                className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[24px] border-l-transparent border-r-transparent border-t-yellow-400"
+                style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
+              />
+            </motion.div>
 
             {/* Decorative lights around wheel */}
             <div className="absolute inset-0 pointer-events-none">
