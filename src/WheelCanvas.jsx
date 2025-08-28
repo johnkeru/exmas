@@ -13,7 +13,7 @@ const WheelCanvas = forwardRef(
       const H = canvas.height;
       const cx = W / 2;
       const cy = H / 2;
-      const radius = Math.min(W, H) * 0.42;
+      const radius = Math.min(W, H) * 0.45;
 
       ctx.clearRect(0, 0, W, H);
       const segAngle = (Math.PI * 2) / segments;
@@ -26,49 +26,37 @@ const WheelCanvas = forwardRef(
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, a0, a1);
         ctx.closePath();
-        ctx.fillStyle = i % 2 === 0 ? colors.hollyGreen : colors.candyRed;
+        ctx.fillStyle = colors[i % 2 === 0 ? 0 : 1];
         ctx.fill();
 
-        // Add festive snowflake pattern
         ctx.save();
         ctx.translate(cx, cy);
         const mid = a0 + segAngle / 2;
         ctx.rotate(mid);
-        ctx.fillStyle = colors.snowWhite;
-        ctx.font = "600 18px 'Mountains of Christmas', cursive";
+        ctx.fillStyle = colors[3];
+        ctx.font = "700 18px 'Mountains of Christmas', cursive";
         ctx.textAlign = "center";
         ctx.fillText(labels[i] || "", radius * 0.65, 6);
-        // Add subtle snowflake decoration
-        ctx.font = "12px Arial";
+        ctx.font = "14px Arial";
         ctx.fillText("❄", radius * 0.85, 6);
         ctx.restore();
       }
 
-      // Inner festive rings
       ctx.beginPath();
-      ctx.arc(cx, cy, radius * 0.36, 0, Math.PI * 2);
-      ctx.fillStyle = colors.hollyGreen;
+      ctx.arc(cx, cy, radius * 0.3, 0, Math.PI * 2);
+      ctx.fillStyle = colors[2];
       ctx.fill();
       ctx.beginPath();
-      ctx.arc(cx, cy, radius * 0.25, 0, Math.PI * 2);
-      ctx.fillStyle = colors.goldenBell;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx, cy, 18, 0, Math.PI * 2);
-      ctx.fillStyle = colors.snowWhite;
-      ctx.fill();
-      ctx.beginPath();
-      ctx.arc(cx, cy, 10, 0, Math.PI * 2);
-      ctx.fillStyle = colors.candyRed;
+      ctx.arc(cx, cy, 15, 0, Math.PI * 2);
+      ctx.fillStyle = colors[1];
       ctx.fill();
 
-      // Add glowing effect
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-      ctx.strokeStyle = `rgba(255, 215, 0, 0.5)`;
+      ctx.strokeStyle = "rgba(255, 215, 0, 0.7)";
       ctx.lineWidth = 4;
-      ctx.shadowBlur = 10;
-      ctx.shadowColor = colors.goldenBell;
+      ctx.shadowBlur = 12;
+      ctx.shadowColor = colors[2];
       ctx.stroke();
       ctx.shadowBlur = 0;
     };
@@ -76,7 +64,7 @@ const WheelCanvas = forwardRef(
     const resize = () => {
       const canvas = canvasRef.current;
       if (!canvas) return;
-      const W = Math.min(800, Math.floor(window.innerWidth * 0.9));
+      const W = Math.min(800, Math.floor(window.innerWidth * 0.85));
       canvas.width = W;
       canvas.height = W;
       draw();
@@ -221,9 +209,9 @@ const WheelCanvas = forwardRef(
         ref={canvasRef}
         width={640}
         height={640}
-        className="rounded-xl shadow-2xl"
+        className="rounded-full shadow-lg"
         style={{
-          background: `radial-gradient(circle, ${colors.snowWhite} 0%, ${colors.hollyGreen} 100%)`,
+          background: `radial-gradient(circle, ${colors[3]} 0%, ${colors[0]} 100%)`,
         }}
         aria-label="Christmas Spinner Wheel"
         role="img"

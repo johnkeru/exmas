@@ -1,16 +1,12 @@
 import React, { useRef, useState, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
-import { FaRedo, FaGift } from "react-icons/fa";
 import WheelCanvas from "./WheelCanvas";
 
 const SpinnerWheel = () => {
   const segments = 8;
   const [labels, setLabels] = useState([]);
-  const [winner, setWinner] = useState(
-    "Spin the wheel to pick a Christmas prize!"
-  );
-  const [lastStop, setLastStop] = useState("—");
+  const [winner, setWinner] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
   const canvasRef = useRef(null);
   const wheelState = useRef({
@@ -23,22 +19,23 @@ const SpinnerWheel = () => {
     slowStartTime: null,
   });
 
-  const colors = {
-    hollyGreen: "#1A3C34",
-    goldenBell: "#FFD700",
-    candyRed: "#A10000",
-    snowWhite: "#F5F6F5",
-  };
+  const colors = [
+    "#2A4D3E", // Forest Green
+    "#A71D31", // Deep Red
+    "#FFD700", // Warm Gold
+    "#F5F6F5", // Snow White
+    "#4682B4", // Icy Blue
+  ];
 
   const pickLabels = () => {
     const base = [
       "🎁 Gift Card",
-      "🎄 Xmas Tree",
+      "🎄 Xmas Ornament",
       "❄️ Snow Globe",
-      "🍪 Gingerbread",
+      "🍪 Cookies",
       "🔔 Jingle Bell",
       "🧦 Stocking",
-      "✨ Surprise",
+      "✨ Surprise Gift",
       "☃️ Snowman",
     ];
     return base.slice(0, 8);
@@ -46,8 +43,7 @@ const SpinnerWheel = () => {
 
   const randomize = () => {
     setLabels(pickLabels());
-    setWinner("Spin the wheel to pick a Christmas prize!");
-    setLastStop("—");
+    setWinner(null);
     setShowConfetti(false);
   };
 
@@ -59,17 +55,12 @@ const SpinnerWheel = () => {
     if (normalized < 0) normalized += Math.PI * 2;
     const idx = Math.floor(normalized / segAngle) % segments;
     const label = labels[idx];
-    setWinner(
-      <>
-        <strong style={{ color: colors.candyRed }}>Merry Winner:</strong>{" "}
-        <span style={{ fontWeight: 800, color: colors.hollyGreen }}>
-          {label}
-        </span>
-      </>
-    );
-    setLastStop(label);
+    setWinner(label);
     setShowConfetti(true);
-    setTimeout(() => setShowConfetti(false), 6000); // Extended confetti duration
+    setTimeout(() => {
+      setShowConfetti(false);
+      setTimeout(() => setWinner(null), 500); // Close popup after confetti
+    }, 5000);
   };
 
   const handleReset = () => {
@@ -80,7 +71,6 @@ const SpinnerWheel = () => {
   };
 
   useEffect(() => {
-    // Load festive font
     const link = document.createElement("link");
     link.href =
       "https://fonts.googleapis.com/css2?family=Mountains+of+Christmas:wght@400;700&display=swap";
@@ -91,24 +81,12 @@ const SpinnerWheel = () => {
   }, []);
 
   return (
-    <div
-      className="container w-full max-w-[900px] grid grid-cols-1 md:grid-cols-[1fr_360px] gap-5"
-      style={{
-        background: `url('https://www.transparenttextures.com/patterns/snow.png')`,
-        padding: "20px",
-        borderRadius: "16px",
-      }}
-    >
+    <div className="min-h-screen bg-[#F5F6F5] flex items-center justify-center p-4">
       {showConfetti && (
         <Confetti
           width={window.innerWidth}
           height={window.innerHeight}
-          colors={[
-            colors.candyRed,
-            colors.hollyGreen,
-            colors.goldenBell,
-            colors.snowWhite,
-          ]}
+          colors={colors}
           confettiSource={{
             x: window.innerWidth / 2,
             y: window.innerHeight / 2,
@@ -116,7 +94,6 @@ const SpinnerWheel = () => {
             h: 0,
           }}
           drawShape={(ctx) => {
-            // Custom Christmas shapes (star, tree, snowflake)
             const shapes = [
               () => {
                 ctx.beginPath();
@@ -136,12 +113,9 @@ const SpinnerWheel = () => {
               },
               () => {
                 ctx.beginPath();
-                ctx.moveTo(0, -10);
-                ctx.lineTo(-8, 0);
-                ctx.lineTo(8, 0);
-                ctx.lineTo(0, -10);
-                ctx.lineTo(-6, 2);
-                ctx.lineTo(6, 2);
+                ctx.moveTo(0, -8);
+                ctx.lineTo(-6, 0);
+                ctx.lineTo(6, 0);
                 ctx.closePath();
                 ctx.fill();
               },
@@ -154,35 +128,81 @@ const SpinnerWheel = () => {
           }}
         />
       )}
+      <AnimatePresence>
+        {winner && (
+          <motion.div
+            className="fixed inset-0 flex items-center justify-center bg-black/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div
+              className="bg-white rounded-xl p-6 shadow-xl max-w-sm w-full border border-[#A71D31]/30"
+              style={{ fontFamily: "'Mountains of Christmas', cursive" }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ duration: 0.3 }}
+            >
+              <h2 className="text-2xl font-bold text-[#2A4D3E] mb-4 flex items-center gap-2">
+                <i className="fas fa-gift text-[#A71D31]"></i> Merry Winner!
+              </h2>
+              <p className="text-xl text-[#A71D31] mb-4">
+                You won:{" "}
+                <span className="font-bold text-[#2A4D3E]">{winner}</span>
+              </p>
+              <motion.button
+                onClick={handleReset}
+                className="bg-[#A71D31] text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-[#8B1A28] transition mx-auto"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
+                <i className="fas fa-redo"></i> Spin Again
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <motion.div
-        className="card bg-gradient-to-b from-[rgba(245,246,245,0.95)] to-[rgba(255,255,255,0.8)] rounded-2xl p-5 shadow-lg border-2 border-[rgba(161,0,0,0.1)]"
+        className="bg-white rounded-2xl p-6 shadow-xl max-w-[900px] w-full border border-[#A71D31]/20"
         style={{ fontFamily: "'Mountains of Christmas', cursive" }}
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
       >
-        <h1 className="text-3xl font-bold text-[#1A3C34] flex items-center gap-2">
-          <FaGift className="text-[#A10000]" /> Christmas Party Wheel
-        </h1>
-        <p className="text-gray-600 text-lg">
-          Flick the wheel to spin and win a festive prize! The harder you flick,
-          the faster it spins!
-        </p>
-        <div className="wheel-wrap flex items-center justify-center p-3 relative">
-          <WheelCanvas
-            ref={canvasRef}
-            segments={segments}
-            labels={labels}
-            wheelState={wheelState}
-            colors={colors}
-            announceWinner={announceWinner}
-          />
-          <motion.div
-            className="needle w-0 h-0 border-l-[16px] border-r-[16px] border-t-[32px] border-l-transparent border-r-transparent border-t-[#FFD700] absolute left-1/2 top-0 -translate-x-1/2"
-            style={{ filter: "drop-shadow(0px 3px 4px rgba(0,0,0,0.4))" }}
-            animate={{ rotate: [0, 6, -6, 0], scale: [1, 1.05, 1] }}
-            transition={{ repeat: Infinity, duration: 1.2 }}
-          />
+        <div className="flex flex-col items-center">
+          <h1 className="text-3xl font-bold text-[#2A4D3E] flex items-center gap-2 mb-4">
+            <i className="fas fa-gift text-[#A71D31]"></i> Christmas Prize Wheel
+          </h1>
+          <p className="text-gray-600 text-lg mb-4 text-center">
+            Spin the wheel to win a festive Christmas prize! Flick harder for a
+            merrier spin!
+          </p>
+          <div className="relative">
+            <WheelCanvas
+              ref={canvasRef}
+              segments={segments}
+              labels={labels}
+              wheelState={wheelState}
+              colors={colors}
+              announceWinner={announceWinner}
+            />
+            <motion.div
+              className="absolute w-0 h-0 border-l-[12px] border-r-[12px] border-t-[24px] border-l-transparent border-r-transparent border-t-[#FFD700] left-1/2 top-0 -translate-x-1/2"
+              style={{ filter: "drop-shadow(0 3px 4px rgba(0,0,0,0.3))" }}
+              animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.1, 1] }}
+              transition={{ repeat: Infinity, duration: 1.2 }}
+            />
+          </div>
+          <motion.button
+            onClick={handleReset}
+            className="bg-[#A71D31] text-white font-bold py-2 px-4 rounded-lg flex items-center gap-2 hover:bg-[#8B1A28] transition mt-4"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <i className="fas fa-redo"></i> Reset
+          </motion.button>
         </div>
       </motion.div>
     </div>
