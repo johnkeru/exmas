@@ -258,7 +258,7 @@ const SpinnerWheel = () => {
                   transition={{ repeat: Infinity, duration: 1.2 }}
                 >
                   <img
-                    src="https://www.pngall.com/wp-content/uploads/2016/12/Santa-Hat-PNG-Picture.png"
+                    src="https://www.pngarc.com/wp-content/uploads/2023/06/Red-Christmas-hat-background-png-image-1-min.png"
                     alt="Santa Hat"
                     className="w-16 h-16"
                     style={{ transform: "translateX(-20px)" }}
