@@ -6,8 +6,20 @@ const WheelCanvas = forwardRef(
     const animationFrameRef = useRef(null);
     const images = useRef({}); // Cache for loaded images
 
-    // Preload images
+    // Preload images, including the logo
     useEffect(() => {
+      // Load the logo image
+      const logoImg = new Image();
+      logoImg.src = "logo.svg";
+      logoImg.onload = () => {
+        images.current["logo"] = logoImg;
+        draw();
+      };
+      logoImg.onerror = () => {
+        console.error("Failed to load logo image: logo.svg");
+      };
+
+      // Load segment label images
       labels.forEach((label) => {
         if (label.img && !images.current[label.img]) {
           const img = new Image();
@@ -109,15 +121,28 @@ const WheelCanvas = forwardRef(
       ctx.fillStyle = gradient;
       ctx.fill();
 
-      // Inner circle with Christmas tree emoji
+      // Inner circle for logo
       ctx.beginPath();
-      ctx.arc(cx, cy, 20, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 40, 0, Math.PI * 2); // Increased radius for larger logo
       ctx.fillStyle = colors[1];
       ctx.fill();
-      ctx.font = "30px 'Christmas Bell'";
-      ctx.fillStyle = colors[3];
-      ctx.textAlign = "center";
-      ctx.fillText("🎄", cx, cy + 10);
+
+      // Draw logo in the center
+      if (images.current["logo"]) {
+        const logoSize = 60; // Increased logo size
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, logoSize / 2, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(
+          images.current["logo"],
+          cx - logoSize / 2,
+          cy - logoSize / 2,
+          logoSize,
+          logoSize
+        );
+        ctx.restore();
+      }
 
       // Outer ring with glowing lights effect
       ctx.beginPath();
