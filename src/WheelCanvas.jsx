@@ -1,9 +1,28 @@
+// WheelCanvas.jsx
 import React, { useRef, useEffect, forwardRef } from "react";
 
 const WheelCanvas = forwardRef(
   ({ segments, labels, wheelState, colors, announceWinner }, ref) => {
     const canvasRef = useRef(null);
     const animationFrameRef = useRef(null);
+    const images = useRef({}); // Cache for loaded images
+
+    // Preload images
+    useEffect(() => {
+      labels.forEach((label) => {
+        if (label.img && !images.current[label.img]) {
+          const img = new Image();
+          img.src = label.img;
+          img.onload = () => {
+            images.current[label.img] = img;
+            draw(); // Redraw when image is loaded
+          };
+          img.onerror = () => {
+            console.error(`Failed to load image: ${label.img}`);
+          };
+        }
+      });
+    }, [labels]);
 
     const draw = () => {
       const canvas = canvasRef.current;
@@ -37,18 +56,34 @@ const WheelCanvas = forwardRef(
         ctx.lineWidth = 2;
         ctx.stroke();
 
-        // Segment labels
+        // Segment labels and images
         ctx.save();
         ctx.translate(cx, cy);
         const mid = a0 + segAngle / 2;
         ctx.rotate(mid);
+
+        // Draw player image
+        const imgSize = 40; // Size of the image
+        if (labels[i]?.img && images.current[labels[i].img]) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(radius * 0.65, 0, imgSize / 2, 0, Math.PI * 2);
+          ctx.clip();
+          ctx.drawImage(
+            images.current[labels[i].img],
+            radius * 0.65 - imgSize / 2,
+            -imgSize / 2,
+            imgSize,
+            imgSize
+          );
+          ctx.restore();
+        }
+
+        // Draw player name
         ctx.fillStyle = colors[3];
-        ctx.font = "700 20px 'Mountains of Christmas', cursive";
+        ctx.font = "700 18px 'Mountains of Christmas', cursive";
         ctx.textAlign = "center";
-        ctx.fillText(labels[i] || "", radius * 0.65, 6);
-        // Add festive emoji
-        ctx.font = "16px Arial";
-        ctx.fillText(["🎄", "❄️", "🎁", "🔔"][i % 4], radius * 0.85, 6);
+        ctx.fillText(labels[i]?.name || "", radius * 0.65, imgSize / 2 + 20); // Position text below image
         ctx.restore();
       }
 
@@ -122,9 +157,8 @@ const WheelCanvas = forwardRef(
       wheelState.current.isDragging = true;
       wheelState.current.recent = [];
       wheelState.current.lastPointerAngle = getAngleForEvent(ev);
-      // Play jingle bell sound
       const audio = new Audio(
-        "https://www.soundjay.com/buttons/sounds/button-09.mp3" // Replace with jingle bell sound URL
+        "https://www.soundjay.com/buttons/sounds/button-09.mp3"
       );
       audio.play();
     };
@@ -221,9 +255,8 @@ const WheelCanvas = forwardRef(
             wheelState.current.angularVelocity = 0;
             wheelState.current.slowStartTime = null;
             announceWinner();
-            // Play winner sound
             const audio = new Audio(
-              "https://www.soundjay.com/buttons/sounds/button-10.mp3" // Replace with festive cheer sound URL
+              "https://www.soundjay.com/buttons/sounds/button-10.mp3"
             );
             audio.play();
           }
