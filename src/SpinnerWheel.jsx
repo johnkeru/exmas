@@ -66,7 +66,7 @@ const SpinnerWheel = () => {
     setWinner(winnerData);
     setShowConfetti(true);
     const audio = new Audio(
-      "https://www.myinstants.com/media/sounds/jingle-bells.mp3" // Jingle bell sound
+      "https://www.myinstants.com/media/sounds/jingle-bells.mp3"
     );
     audio.play();
     setTimeout(() => {
@@ -117,8 +117,8 @@ const SpinnerWheel = () => {
     <div
       className="min-h-screen flex flex-col md:flex-row items-center justify-center p-4 relative overflow-hidden gap-8"
       style={{
-        background: `linear-gradient(135deg, ${colors[4]} 0%, ${colors[1]} 100%), url('https://www.transparenttextures.com/patterns/snow.png'), url('https://images.unsplash.com/photo-1542319630-55fb7f7c944a?auto=format&fit=crop&w=1920&q=80')`,
-        backgroundBlendMode: "overlay, multiply, normal",
+        background: `radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, rgba(163, 8, 12, 0.8) 100%), url('https://images.unsplash.com/photo-1609183468042-9db1d7fd6c9d?auto=format&fit=crop&w=1920&q=80')`,
+        backgroundBlendMode: "overlay, normal",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
@@ -128,23 +128,23 @@ const SpinnerWheel = () => {
         className="absolute inset-0 pointer-events-none"
         style={{ zIndex: 10 }}
       >
-        {[...Array(50)].map((_, i) => (
+        {[...Array(30)].map((_, i) => (
           <motion.div
             key={i}
-            className="absolute text-white text-2xl"
+            className="absolute text-white text-xl"
             style={{
               left: `${Math.random() * 100}%`,
               top: "-10%",
             }}
             animate={{
               y: window.innerHeight + 10,
-              opacity: [0, 1, 0],
+              opacity: [0, 0.8, 0],
               rotate: Math.random() * 360,
             }}
             transition={{
-              duration: Math.random() * 5 + 5,
+              duration: Math.random() * 4 + 4,
               repeat: Infinity,
-              delay: Math.random() * 2,
+              delay: Math.random() * 1.5,
             }}
           >
             ❄️
@@ -170,6 +170,7 @@ const SpinnerWheel = () => {
               () => {
                 ctx.beginPath();
                 ctx.moveTo(0, -12);
+                ctx.lineToAscendancy;
                 ctx.lineTo(-8, 0);
                 ctx.lineTo(8, 0);
                 ctx.lineTo(0, 12);
@@ -205,61 +206,91 @@ const SpinnerWheel = () => {
         {winner && (
           <motion.div
             className="fixed inset-0 flex items-center justify-center"
-            style={{ zIndex: 50, background: "rgba(0, 0, 0, 0.6)" }}
+            style={{ zIndex: 50, background: "rgba(0, 0, 0, 0.7)" }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.4 }}
           >
             <motion.div
-              className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full border-4 border-[#FFD700]"
+              className="bg-white rounded-2xl p-10 shadow-2xl max-w-lg w-full"
               style={{
                 fontFamily: "'Christmas Bell', cursive",
                 background: `linear-gradient(135deg, ${colors[3]} 0%, ${colors[4]} 100%)`,
                 boxShadow: "0 0 30px rgba(255, 215, 0, 0.7)",
+                border: "4px solid #FFD700",
+                animation: "pulseGlow 2s infinite",
               }}
-              initial={{ scale: 0.7, opacity: 0, rotate: -10 }}
-              animate={{ scale: 1, opacity: 1, rotate: 0 }}
-              exit={{ scale: 0.7, opacity: 0, rotate: 10 }}
-              transition={{ duration: 0.5, type: "spring" }}
             >
-              <h2 className="text-4xl font-bold text-[#1A3C34] mb-4 flex items-center gap-3 justify-center">
-                <i className="fas fa-star text-[#FFD700]"></i> Christmas
-                Champion!
+              <style>
+                {`
+                  @keyframes pulseGlow {
+                    0% { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+                    50% { border-color: #FFFF00; box-shadow: 0 0 20px rgba(255, 215, 0, 0.8); }
+                    100% { border-color: #FFD700; box-shadow: 0 0 10px rgba(255, 215, 0, 0.5); }
+                  }
+                `}
+              </style>
+              <h2 className="text-5xl font-bold text-[#1A3C34] mb-6 flex items-center gap-3 justify-center">
+                <i className="fas fa-star text-[#FFD700]"></i> Santa’s Star! 🎅
               </h2>
-              <div className="relative flex justify-center mb-6">
+              <div className="relative flex justify-center mb-8">
                 <motion.img
                   src={winner.img}
                   alt={winner.name}
-                  className="w-32 h-32 rounded-full border-4 border-[#A3080C]"
+                  className="w-48 h-48 rounded-full border-4 border-[#A3080C]"
                   animate={{
-                    y: [0, -20, 0],
-                    rotate: [0, 5, -5, 0],
-                    scale: [1, 1.1, 1],
+                    y: [0, -30, 0],
+                    scale: [1, 1.15, 1],
+                    boxShadow: [
+                      "0 0 10px rgba(255, 215, 0, 0.5)",
+                      "0 0 20px rgba(255, 215, 0, 0.8)",
+                      "0 0 10px rgba(255, 215, 0, 0.5)",
+                    ],
                   }}
                   transition={{
                     repeat: Infinity,
-                    duration: 0.8,
+                    duration: 1,
                     ease: "easeInOut",
                   }}
                 />
                 <motion.div
-                  className="absolute -top-4"
-                  animate={{ rotate: [-10, 10, -10] }}
-                  transition={{ repeat: Infinity, duration: 1.2 }}
+                  className="absolute -top-8"
+                  animate={{ rotate: [-15, 15, -15], y: [0, -10, 0] }}
+                  transition={{ repeat: Infinity, duration: 1 }}
                 >
                   <img
                     src="https://www.pngarc.com/wp-content/uploads/2023/06/Red-Christmas-hat-background-png-image-1-min.png"
                     alt="Santa Hat"
-                    className="w-20 h-20"
-                    style={{ transform: "translateX(-25px)" }}
+                    className="w-24 h-24"
+                    style={{ transform: "translateX(-30px)" }}
                   />
                 </motion.div>
+                {/* Sparkle effects */}
+                {[...Array(5)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-3 h-3 rounded-full bg-[#FFD700]"
+                    style={{
+                      left: `${Math.random() * 80 + 10}%`,
+                      top: `${Math.random() * 80 + 10}%`,
+                    }}
+                    animate={{
+                      scale: [0, 1.5, 0],
+                      opacity: [0, 1, 0],
+                    }}
+                    transition={{
+                      repeat: Infinity,
+                      duration: 1.5,
+                      delay: Math.random() * 0.5,
+                    }}
+                  />
+                ))}
               </div>
-              <p className="text-2xl text-[#A3080C] mb-6 text-center">
-                Jingle All the Way!{" "}
+              <p className="text-3xl text-[#A3080C] mb-8 text-center">
+                🎁 Hooray!{" "}
                 <span className="font-bold text-[#1A3C34]">{winner.name}</span>{" "}
-                is the Holiday Hero!
+                is Santa’s favorite this Christmas! 🎄
               </p>
               <div className="flex justify-center gap-4">
                 <motion.button
