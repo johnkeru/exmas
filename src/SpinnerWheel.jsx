@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Confetti from "react-confetti";
 import WheelCanvas from "./WheelCanvas";
 
-const players = [
+const initialPlayers = [
   { name: "Alice", img: "https://i.pravatar.cc/150?img=1" },
   { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
   { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
@@ -20,7 +20,9 @@ const players = [
 ];
 
 const SpinnerWheel = () => {
-  const segments = 8;
+  const [segments, setSegments] = useState(8); // Dynamic segments state
+  const [availablePlayers, setAvailablePlayers] = useState(initialPlayers);
+  const [winners, setWinners] = useState([]);
   const [labels, setLabels] = useState([]);
   const [winner, setWinner] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -44,9 +46,8 @@ const SpinnerWheel = () => {
   ];
 
   const pickLabels = () => {
-    // Shuffle players array and take up to 8 players
-    const shuffled = [...players].sort(() => Math.random() - 0.5);
-    return shuffled.slice(0, segments);
+    const shuffled = [...availablePlayers].sort(() => Math.random() - 0.5);
+    return shuffled.slice(0, Math.min(segments, availablePlayers.length));
   };
 
   const randomize = () => {
@@ -62,13 +63,39 @@ const SpinnerWheel = () => {
     let normalized = effective % (Math.PI * 2);
     if (normalized < 0) normalized += Math.PI * 2;
     const idx = Math.floor(normalized / segAngle) % segments;
-    const label = labels[idx]?.name || "Unknown"; // Use name for winner announcement
-    setWinner(label);
+    const winnerData = labels[idx] || { name: "Unknown", img: "" };
+    setWinner(winnerData);
     setShowConfetti(true);
+    const audio = new Audio(
+      "https://www.soundjay.com/buttons/sounds/button-10.mp3" // Replace with festive jingle bell sound URL
+    );
+    audio.play();
     setTimeout(() => {
       setShowConfetti(false);
-      setTimeout(() => setWinner(null), 500);
     }, 6000);
+  };
+
+  const handleExclude = () => {
+    if (winner) {
+      setAvailablePlayers((prev) =>
+        prev.filter((player) => player.name !== winner.name)
+      );
+      setWinners((prev) => [...prev, winner]);
+      // Reduce segments by 1, but keep at least 2
+      setSegments((prev) =>
+        Math.max(2, Math.min(prev - 1, availablePlayers.length - 1))
+      );
+      randomize();
+      wheelState.current.angle = 0;
+      wheelState.current.angularVelocity = 0;
+      wheelState.current.slowStartTime = null;
+      setWinner(null);
+    }
+  };
+
+  const handleClose = () => {
+    setWinner(null);
+    setShowConfetti(false);
   };
 
   const handleReset = () => {
@@ -81,12 +108,12 @@ const SpinnerWheel = () => {
   useEffect(() => {
     const link = document.createElement("link");
     link.href =
-      "https://fonts.googleapis.com/css2?family=Christmas+Bell:wght@400;700&display=swap";
+      "https://fonts.googleapis.com/css2?family=Christmas+Bell:wght@400;700&family=Mountains+of+Christmas:wght@400;700&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
     randomize();
     return () => document.head.removeChild(link);
-  }, []);
+  }, [availablePlayers, segments]);
 
   return (
     <div
@@ -97,7 +124,10 @@ const SpinnerWheel = () => {
       }}
     >
       {/* Falling snow effect */}
-      <div className="absolute inset-0 pointer-events-none">
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ zIndex: 10 }}
+      >
         {[...Array(50)].map((_, i) => (
           <motion.div
             key={i}
@@ -134,10 +164,10 @@ const SpinnerWheel = () => {
             w: 0,
             h: 0,
           }}
+          style={{ zIndex: 20 }}
           drawShape={(ctx) => {
             const shapes = [
               () => {
-                // Christmas tree
                 ctx.beginPath();
                 ctx.moveTo(0, -12);
                 ctx.lineTo(-8, 0);
@@ -147,7 +177,6 @@ const SpinnerWheel = () => {
                 ctx.fill();
               },
               () => {
-                // Star
                 ctx.beginPath();
                 for (let i = 0; i < 5; i++) {
                   ctx.lineTo(
@@ -163,7 +192,6 @@ const SpinnerWheel = () => {
                 ctx.fill();
               },
               () => {
-                // Present
                 ctx.beginPath();
                 ctx.rect(-6, -6, 12, 12);
                 ctx.fill();
@@ -186,7 +214,8 @@ const SpinnerWheel = () => {
       <AnimatePresence>
         {winner && (
           <motion.div
-            className="fixed inset-0 flex items-center justify-center bg-black/60"
+            className="fixed inset-0 flex items-center justify-center"
+            style={{ zIndex: 50 }}
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -194,27 +223,72 @@ const SpinnerWheel = () => {
           >
             <motion.div
               className="bg-white rounded-2xl p-8 shadow-2xl max-w-md w-full border-4 border-[#FFD700]"
-              style={{ fontFamily: "'Christmas Bell', cursive" }}
+              style={{
+                fontFamily: "'Christmas Bell', cursive",
+                background: `linear-gradient(135deg, ${colors[3]} 0%, ${colors[4]} 100%)`,
+                boxShadow: "0 0 20px rgba(255, 215, 0, 0.5)",
+              }}
               initial={{ scale: 0.7, opacity: 0, rotate: -10 }}
               animate={{ scale: 1, opacity: 1, rotate: 0 }}
               exit={{ scale: 0.7, opacity: 0, rotate: 10 }}
               transition={{ duration: 0.5, type: "spring" }}
             >
-              <h2 className="text-4xl font-bold text-[#1A3C34] mb-4 flex items-center gap-3">
-                <i className="fas fa-star text-[#FFD700]"></i> Holiday Cheers!
+              <h2 className="text-4xl font-bold text-[#1A3C34] mb-4 flex items-center gap-3 justify-center">
+                <i className="fas fa-star text-[#FFD700]"></i> Holiday
+                Superstar!
               </h2>
-              <p className="text-2xl text-[#9B1B30] mb-6">
-                Winner:{" "}
-                <span className="font-bold text-[#1A3C34]">{winner}</span>
+              <div className="relative flex justify-center mb-6">
+                <motion.img
+                  src={winner.img}
+                  alt={winner.name}
+                  className="w-32 h-32 rounded-full border-4 border-[#9B1B30]"
+                  animate={{
+                    y: [0, -20, 0],
+                    rotate: [0, 5, -5, 0],
+                    scale: [1, 1.1, 1],
+                  }}
+                  transition={{
+                    repeat: Infinity,
+                    duration: 0.8,
+                    ease: "easeInOut",
+                  }}
+                />
+                <motion.div
+                  className="absolute -top-4"
+                  animate={{ rotate: [-10, 10, -10] }}
+                  transition={{ repeat: Infinity, duration: 1.2 }}
+                >
+                  <img
+                    src="https://www.pngall.com/wp-content/uploads/2016/12/Santa-Hat-PNG-Picture.png"
+                    alt="Santa Hat"
+                    className="w-16 h-16"
+                    style={{ transform: "translateX(-20px)" }}
+                  />
+                </motion.div>
+              </div>
+              <p className="text-2xl text-[#9B1B30] mb-6 text-center">
+                Ho Ho Ho!{" "}
+                <span className="font-bold text-[#1A3C34]">{winner.name}</span>{" "}
+                just stole the Christmas spotlight!
               </p>
-              <motion.button
-                onClick={handleReset}
-                className="bg-[#9B1B30] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition mx-auto"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                <i className="fas fa-sleigh"></i> Spin Again
-              </motion.button>
+              <div className="flex justify-center gap-4">
+                <motion.button
+                  onClick={handleExclude}
+                  className="bg-[#1A3C34] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#0F2A22] transition"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fas fa-ban"></i> Exclude
+                </motion.button>
+                <motion.button
+                  onClick={handleClose}
+                  className="bg-[#9B1B30] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  <i className="fas fa-times"></i> Close
+                </motion.button>
+              </div>
             </motion.div>
           </motion.div>
         )}
@@ -222,7 +296,7 @@ const SpinnerWheel = () => {
 
       <motion.div
         className="bg-white rounded-3xl p-8 shadow-2xl max-w-[900px] w-full border-4 border-[#FFD700]"
-        style={{ fontFamily: "'Christmas Bell', cursive" }}
+        style={{ fontFamily: "'Christmas Bell', cursive", zIndex: 10 }}
         initial={{ opacity: 0, y: 50 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, type: "spring" }}
@@ -234,7 +308,7 @@ const SpinnerWheel = () => {
           <p className="text-[#3B5998] text-xl mb-6 text-center max-w-md">
             Give it a festive flick to pick a winner! Spin with holiday spirit!
           </p>
-          <div className="relative">
+          <div className="relative" style={{ zIndex: 10 }}>
             <WheelCanvas
               ref={canvasRef}
               segments={segments}
@@ -258,7 +332,10 @@ const SpinnerWheel = () => {
               />
             </motion.div>
 
-            <div className="absolute inset-0 pointer-events-none">
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: 15 }}
+            >
               {[...Array(8)].map((_, i) => (
                 <motion.div
                   key={i}
@@ -286,6 +363,7 @@ const SpinnerWheel = () => {
             className="bg-[#9B1B30] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition mt-6"
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.9 }}
+            disabled={availablePlayers.length === 0}
           >
             <i className="fas fa-gift"></i> Reset & Spin
           </motion.button>
