@@ -25,6 +25,7 @@ const SpinnerWheel = () => {
   const [labels, setLabels] = useState([]);
   const [winner, setWinner] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [wheelStopped, setWheelStopped] = useState(true); // Track wheel stopped status
   const canvasRef = useRef(null);
   const wheelState = useRef({
     angle: 0,
@@ -112,6 +113,15 @@ const SpinnerWheel = () => {
     randomize();
     return () => document.head.removeChild(link);
   }, [availablePlayers, segments]);
+
+  // Update wheelStopped state based on wheelState.current.stopped
+  useEffect(() => {
+    const checkStopped = () => {
+      setWheelStopped(wheelState.current.stopped);
+    };
+    const interval = setInterval(checkStopped, 100); // Check every 100ms
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <div
@@ -350,8 +360,16 @@ const SpinnerWheel = () => {
               />
               <motion.div
                 className="absolute left-1/2 top-0 -translate-x-1/2 flex flex-col items-center"
-                animate={{ rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }}
-                transition={{ repeat: Infinity, duration: 1.2 }}
+                animate={
+                  wheelStopped
+                    ? { rotate: 0, scale: 1 }
+                    : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }
+                }
+                transition={
+                  wheelStopped
+                    ? { duration: 0.5, ease: "easeOut" }
+                    : { repeat: Infinity, duration: 1.2 }
+                }
               >
                 <div
                   className="w-4 h-10 bg-[#A3080C] rounded"
