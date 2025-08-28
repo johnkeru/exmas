@@ -110,12 +110,12 @@ const WheelCanvas = forwardRef(
       ctx.fill();
 
       ctx.beginPath();
-      ctx.arc(cx, cy, 50, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 80, 0, Math.PI * 2); // Increased inner circle size
       ctx.fillStyle = colors[1];
       ctx.fill();
 
       if (images.current["logo"]) {
-        const logoSize = 80;
+        const logoSize = 120; // Increased logo size
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, logoSize / 2, 0, Math.PI * 2);
