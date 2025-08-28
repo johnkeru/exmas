@@ -126,10 +126,7 @@ const SpinnerWheel = () => {
     <div
       className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{
-        background: `radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, rgba(163, 8, 12, 0.8) 100%), url('https://images.unsplash.com/photo-1609183468042-9db1d7fd6c9d?auto=format&fit=crop&w=1920&q=80')`,
-        backgroundBlendMode: "overlay, normal",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
+        background: "#1A3C34",
       }}
     >
       {/* Falling snow effect */}
