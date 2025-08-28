@@ -90,7 +90,6 @@ const WheelCanvas = forwardRef(
         ctx.fillText(labels[i]?.name || "", radius * 0.65, imgSize / 2 + 25);
 
         ctx.font = "24px 'Christmas Bell'";
-        ctx.fillText(i % 2 === 0 ? "🍬" : "🎄", radius * 0.85, 10);
         ctx.restore();
       }
 
