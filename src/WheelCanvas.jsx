@@ -1,4 +1,3 @@
-// WheelCanvas.jsx
 import React, { useRef, useEffect, forwardRef } from "react";
 
 const WheelCanvas = forwardRef(
@@ -15,7 +14,7 @@ const WheelCanvas = forwardRef(
           img.src = label.img;
           img.onload = () => {
             images.current[label.img] = img;
-            draw(); // Redraw when image is loaded
+            draw();
           };
           img.onerror = () => {
             console.error(`Failed to load image: ${label.img}`);
@@ -37,13 +36,13 @@ const WheelCanvas = forwardRef(
       // Clear canvas
       ctx.clearRect(0, 0, W, H);
 
-      // Draw wheel segments
+      // Draw wheel segments with festive patterns
       const segAngle = (Math.PI * 2) / segments;
       for (let i = 0; i < segments; i++) {
         const a0 = wheelState.current.angle + i * segAngle;
         const a1 = a0 + segAngle;
 
-        // Segment background
+        // Segment background with alternating colors
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, a0, a1);
@@ -53,8 +52,11 @@ const WheelCanvas = forwardRef(
 
         // Segment border with festive glow
         ctx.strokeStyle = "#FFD700";
-        ctx.lineWidth = 2;
+        ctx.lineWidth = 3;
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = "#FFD700";
         ctx.stroke();
+        ctx.shadowBlur = 0;
 
         // Segment labels and images
         ctx.save();
@@ -63,7 +65,7 @@ const WheelCanvas = forwardRef(
         ctx.rotate(mid);
 
         // Draw player image
-        const imgSize = 40; // Size of the image
+        const imgSize = 50;
         if (labels[i]?.img && images.current[labels[i].img]) {
           ctx.save();
           ctx.beginPath();
@@ -79,11 +81,15 @@ const WheelCanvas = forwardRef(
           ctx.restore();
         }
 
-        // Draw player name
+        // Draw player name with festive font
         ctx.fillStyle = colors[3];
-        ctx.font = "700 18px 'Mountains of Christmas', cursive";
+        ctx.font = "700 20px 'Mountains of Christmas', cursive";
         ctx.textAlign = "center";
-        ctx.fillText(labels[i]?.name || "", radius * 0.65, imgSize / 2 + 20); // Position text below image
+        ctx.fillText(labels[i]?.name || "", radius * 0.65, imgSize / 2 + 25);
+
+        // Add festive icons (e.g., candy cane or ornament)
+        ctx.font = "24px 'Christmas Bell'";
+        ctx.fillText(i % 2 === 0 ? "🍬" : "🎄", radius * 0.85, 10);
         ctx.restore();
       }
 
@@ -97,37 +103,45 @@ const WheelCanvas = forwardRef(
         radius * 0.3
       );
       gradient.addColorStop(0, colors[2]);
-      gradient.addColorStop(1, "#C0C0C0"); // Silver accent
+      gradient.addColorStop(1, "#C0C0C0");
       ctx.beginPath();
       ctx.arc(cx, cy, radius * 0.3, 0, Math.PI * 2);
       ctx.fillStyle = gradient;
       ctx.fill();
 
-      // Inner circle
+      // Inner circle with Christmas tree emoji
       ctx.beginPath();
-      ctx.arc(cx, cy, 15, 0, Math.PI * 2);
+      ctx.arc(cx, cy, 20, 0, Math.PI * 2);
       ctx.fillStyle = colors[1];
       ctx.fill();
+      ctx.font = "30px 'Christmas Bell'";
+      ctx.fillStyle = colors[3];
+      ctx.textAlign = "center";
+      ctx.fillText("🎄", cx, cy + 10);
 
       // Outer ring with glowing lights effect
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(255, 215, 0, 0.8)";
-      ctx.lineWidth = 6;
+      ctx.lineWidth = 8;
       ctx.shadowBlur = 20;
       ctx.shadowColor = "#FFD700";
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      // Add decorative lights
+      // Add decorative Christmas lights
       for (let i = 0; i < 12; i++) {
         const angle = (i * Math.PI * 2) / 12;
         const x = cx + radius * 1.05 * Math.cos(angle);
         const y = cy + radius * 1.05 * Math.sin(angle);
         ctx.beginPath();
-        ctx.arc(x, y, 5, 0, Math.PI * 2);
-        ctx.fillStyle = ["#FF0000", "#00FF00", "#FFFF00", "#0000FF"][i % 4];
+        ctx.arc(x, y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = ["#FF0000", "#00FF00", "#FFFF00", "#FFD700"][i % 4];
         ctx.fill();
+        ctx.shadowBlur = 10;
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.fill();
+        ctx.shadowBlur = 0;
       }
     };
 
@@ -158,7 +172,7 @@ const WheelCanvas = forwardRef(
       wheelState.current.recent = [];
       wheelState.current.lastPointerAngle = getAngleForEvent(ev);
       const audio = new Audio(
-        "https://www.soundjay.com/buttons/sounds/button-09.mp3"
+        "https://www.myinstants.com/media/sounds/jingle-bells.mp3"
       );
       audio.play();
     };
@@ -256,7 +270,7 @@ const WheelCanvas = forwardRef(
             wheelState.current.slowStartTime = null;
             announceWinner();
             const audio = new Audio(
-              "https://www.soundjay.com/buttons/sounds/button-10.mp3"
+              "https://www.myinstants.com/media/sounds/jingle-bells.mp3"
             );
             audio.play();
           }
@@ -289,9 +303,9 @@ const WheelCanvas = forwardRef(
         height={640}
         className="rounded-full shadow-2xl"
         style={{
-          background: `radial-gradient(circle, ${colors[3]} 0%, ${colors[0]} 70%, #000000 100%)`,
-          border: "4px solid #FFD700",
-          boxShadow: "0 0 20px rgba(255, 215, 0, 0.5)",
+          background: `radial-gradient(circle, ${colors[3]} 0%, ${colors[1]} 70%, #000000 100%)`,
+          border: "6px solid #FFD700",
+          boxShadow: "0 0 30px rgba(255, 215, 0, 0.7)",
         }}
         aria-label="Christmas Party Spinner Wheel"
         role="img"
