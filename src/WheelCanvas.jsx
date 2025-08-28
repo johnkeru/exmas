@@ -4,11 +4,9 @@ const WheelCanvas = forwardRef(
   ({ segments, labels, wheelState, colors, announceWinner }, ref) => {
     const canvasRef = useRef(null);
     const animationFrameRef = useRef(null);
-    const images = useRef({}); // Cache for loaded images
+    const images = useRef({});
 
-    // Preload images, including the logo
     useEffect(() => {
-      // Load the logo image
       const logoImg = new Image();
       logoImg.src = "logo.svg";
       logoImg.onload = () => {
@@ -19,7 +17,6 @@ const WheelCanvas = forwardRef(
         console.error("Failed to load logo image: logo.svg");
       };
 
-      // Load segment label images
       labels.forEach((label) => {
         if (label.img && !images.current[label.img]) {
           const img = new Image();
@@ -45,16 +42,13 @@ const WheelCanvas = forwardRef(
       const cy = H / 2;
       const radius = Math.min(W, H) * 0.45;
 
-      // Clear canvas
       ctx.clearRect(0, 0, W, H);
 
-      // Draw wheel segments with festive patterns
       const segAngle = (Math.PI * 2) / segments;
       for (let i = 0; i < segments; i++) {
         const a0 = wheelState.current.angle + i * segAngle;
         const a1 = a0 + segAngle;
 
-        // Segment background with alternating colors
         ctx.beginPath();
         ctx.moveTo(cx, cy);
         ctx.arc(cx, cy, radius, a0, a1);
@@ -62,7 +56,6 @@ const WheelCanvas = forwardRef(
         ctx.fillStyle = colors[i % 2 === 0 ? 0 : 1];
         ctx.fill();
 
-        // Segment border with festive glow
         ctx.strokeStyle = "#FFD700";
         ctx.lineWidth = 3;
         ctx.shadowBlur = 10;
@@ -70,13 +63,11 @@ const WheelCanvas = forwardRef(
         ctx.stroke();
         ctx.shadowBlur = 0;
 
-        // Segment labels and images
         ctx.save();
         ctx.translate(cx, cy);
         const mid = a0 + segAngle / 2;
         ctx.rotate(mid);
 
-        // Draw player image
         const imgSize = 50;
         if (labels[i]?.img && images.current[labels[i].img]) {
           ctx.save();
@@ -93,19 +84,16 @@ const WheelCanvas = forwardRef(
           ctx.restore();
         }
 
-        // Draw player name with festive font
         ctx.fillStyle = colors[3];
         ctx.font = "700 20px 'Mountains of Christmas', cursive";
         ctx.textAlign = "center";
         ctx.fillText(labels[i]?.name || "", radius * 0.65, imgSize / 2 + 25);
 
-        // Add festive icons (e.g., candy cane or ornament)
         ctx.font = "24px 'Christmas Bell'";
         ctx.fillText(i % 2 === 0 ? "🍬" : "🎄", radius * 0.85, 10);
         ctx.restore();
       }
 
-      // Center circle with festive gradient
       const gradient = ctx.createRadialGradient(
         cx,
         cy,
@@ -121,15 +109,13 @@ const WheelCanvas = forwardRef(
       ctx.fillStyle = gradient;
       ctx.fill();
 
-      // Inner circle for logo
       ctx.beginPath();
-      ctx.arc(cx, cy, 40, 0, Math.PI * 2); // Increased radius for larger logo
+      ctx.arc(cx, cy, 50, 0, Math.PI * 2);
       ctx.fillStyle = colors[1];
       ctx.fill();
 
-      // Draw logo in the center
       if (images.current["logo"]) {
-        const logoSize = 60; // Increased logo size
+        const logoSize = 80;
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, logoSize / 2, 0, Math.PI * 2);
@@ -144,7 +130,6 @@ const WheelCanvas = forwardRef(
         ctx.restore();
       }
 
-      // Outer ring with glowing lights effect
       ctx.beginPath();
       ctx.arc(cx, cy, radius, 0, Math.PI * 2);
       ctx.strokeStyle = "rgba(255, 215, 0, 0.8)";
@@ -154,7 +139,6 @@ const WheelCanvas = forwardRef(
       ctx.stroke();
       ctx.shadowBlur = 0;
 
-      // Add decorative Christmas lights
       for (let i = 0; i < 12; i++) {
         const angle = (i * Math.PI * 2) / 12;
         const x = cx + radius * 1.05 * Math.cos(angle);

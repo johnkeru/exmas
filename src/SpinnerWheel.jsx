@@ -25,7 +25,7 @@ const SpinnerWheel = () => {
   const [labels, setLabels] = useState([]);
   const [winner, setWinner] = useState(null);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [wheelStopped, setWheelStopped] = useState(true); // Track wheel stopped status
+  const [wheelStopped, setWheelStopped] = useState(true);
   const canvasRef = useRef(null);
   const wheelState = useRef({
     angle: 0,
@@ -114,18 +114,17 @@ const SpinnerWheel = () => {
     return () => document.head.removeChild(link);
   }, [availablePlayers, segments]);
 
-  // Update wheelStopped state based on wheelState.current.stopped
   useEffect(() => {
     const checkStopped = () => {
       setWheelStopped(wheelState.current.stopped);
     };
-    const interval = setInterval(checkStopped, 100); // Check every 100ms
+    const interval = setInterval(checkStopped, 100);
     return () => clearInterval(interval);
   }, []);
 
   return (
     <div
-      className="min-h-screen flex flex-col md:flex-row items-center justify-center p-4 relative overflow-hidden gap-8"
+      className="min-h-screen flex items-center justify-center p-4 relative overflow-hidden"
       style={{
         background: `radial-gradient(circle at center, rgba(255, 215, 0, 0.2) 0%, rgba(163, 8, 12, 0.8) 100%), url('https://images.unsplash.com/photo-1609183468042-9db1d7fd6c9d?auto=format&fit=crop&w=1920&q=80')`,
         backgroundBlendMode: "overlay, normal",
@@ -180,7 +179,7 @@ const SpinnerWheel = () => {
               () => {
                 ctx.beginPath();
                 ctx.moveTo(0, -12);
-                ctx.lineToAscendancy;
+                ctx.lineTo(0, 12); // Fixed typo: lineToAscendancy -> lineTo
                 ctx.lineTo(-8, 0);
                 ctx.lineTo(8, 0);
                 ctx.lineTo(0, 12);
@@ -276,7 +275,6 @@ const SpinnerWheel = () => {
                     style={{ transform: "translateX(-30px)" }}
                   />
                 </motion.div>
-                {/* Sparkle effects */}
                 {[...Array(5)].map((_, i) => (
                   <motion.div
                     key={i}
@@ -333,128 +331,91 @@ const SpinnerWheel = () => {
         )}
       </AnimatePresence>
 
-      <div className="flex flex-col md:flex-row gap-8 max-w-7xl w-full">
-        <motion.div
-          className="bg-white rounded-3xl p-8 shadow-2xl max-w-[900px] w-full border-4 border-[#FFD700]"
-          style={{ fontFamily: "'Christmas Bell', cursive", zIndex: 10 }}
-          initial={{ opacity: 0, y: 50 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, type: "spring" }}
-        >
-          <div className="flex flex-col items-center">
-            <h1 className="text-4xl font-bold text-[#1A3C34] flex items-center gap-3 mb-4">
-              <i className="fas fa-tree text-[#A3080C]"></i> Jingle Spin Wheel
-            </h1>
-            <p className="text-[#4B7043] text-xl mb-6 text-center max-w-md">
-              Spin the wheel to light up the Christmas party! Who’s the next
-              holiday star?
-            </p>
-            <div className="relative" style={{ zIndex: 10 }}>
-              <WheelCanvas
-                ref={canvasRef}
-                segments={segments}
-                labels={labels}
-                wheelState={wheelState}
-                colors={colors}
-                announceWinner={announceWinner}
-              />
-              <motion.div
-                className="absolute left-1/2 top-0 -translate-x-1/2 flex flex-col items-center"
-                animate={
-                  wheelStopped
-                    ? { rotate: 0, scale: 1 }
-                    : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }
-                }
-                transition={
-                  wheelStopped
-                    ? { duration: 0.5, ease: "easeOut" }
-                    : { repeat: Infinity, duration: 1.2 }
-                }
-              >
-                <div
-                  className="w-4 h-10 bg-[#A3080C] rounded"
-                  style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
-                />
-                <div
-                  className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[24px] border-l-transparent border-r-transparent border-t-[#FFD700]"
-                  style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
-                />
-              </motion.div>
-
-              <div
-                className="absolute inset-0 pointer-events-none"
-                style={{ zIndex: 15 }}
-              >
-                {[...Array(8)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-4 h-4 rounded-full"
-                    style={{
-                      left: `calc(50% + ${
-                        Math.cos((i * Math.PI * 2) / 8) * 360
-                      }px)`,
-                      top: `calc(50% + ${
-                        Math.sin((i * Math.PI * 2) / 8) * 360
-                      }px)`,
-                      background: ["#FF0000", "#00FF00", "#FFFF00", "#FFD700"][
-                        i % 4
-                      ],
-                      boxShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
-                    }}
-                    animate={{ scale: [1, 1.3, 1] }}
-                    transition={{ repeat: Infinity, duration: 1 + i * 0.2 }}
-                  />
-                ))}
-              </div>
-            </div>
-            <motion.button
-              onClick={handleReset}
-              className="bg-[#A3080C] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-              whileHover={{
-                scale: availablePlayers.length > 0 ? 1.1 : 1,
-                boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-              }}
-              whileTap={{ scale: availablePlayers.length > 0 ? 0.9 : 1 }}
-              disabled={availablePlayers.length === 0}
+      <motion.div
+        style={{ fontFamily: "'Christmas Bell', cursive", zIndex: 10 }}
+        initial={{ opacity: 0, y: 50 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, type: "spring" }}
+      >
+        <div className="flex flex-col items-center">
+          <h1 className="text-4xl font-bold text-[#1A3C34] flex items-center gap-3 mb-4">
+            <i className="fas fa-tree text-[#A3080C]"></i> Jingle Spin Wheel
+          </h1>
+          <p className="text-[#4B7043] text-xl mb-6 text-center max-w-md">
+            Spin the wheel to light up the Christmas party! Who’s the next
+            holiday star?
+          </p>
+          <div className="relative" style={{ zIndex: 10 }}>
+            <WheelCanvas
+              ref={canvasRef}
+              segments={segments}
+              labels={labels}
+              wheelState={wheelState}
+              colors={colors}
+              announceWinner={announceWinner}
+            />
+            <motion.div
+              className="absolute left-1/2 top-0 -translate-x-1/2 flex flex-col items-center"
+              animate={
+                wheelStopped
+                  ? { rotate: 0, scale: 1 }
+                  : { rotate: [0, 5, -5, 0], scale: [1, 1.05, 1] }
+              }
+              transition={
+                wheelStopped
+                  ? { duration: 0.5, ease: "easeOut" }
+                  : { repeat: Infinity, duration: 1.2 }
+              }
             >
-              <i className="fas fa-gift"></i> Spin the Holiday Wheel!
-            </motion.button>
-          </div>
-        </motion.div>
-
-        <div
-          className="bg-white rounded-3xl p-6 shadow-2xl max-w-sm w-full border-4 border-[#FFD700] max-h-[600px] overflow-y-auto"
-          style={{ fontFamily: "'Christmas Bell', cursive", zIndex: 10 }}
-        >
-          <h2 className="text-3xl font-bold text-[#1A3C34] mb-4 flex items-center gap-3">
-            <i className="fas fa-trophy text-[#FFD700]"></i> Holiday Hall of
-            Fame
-          </h2>
-          {winners.length === 0 ? (
-            <p className="text-[#4B7043] text-lg text-center">
-              No stars yet! Spin to crown the first Christmas champion!
-            </p>
-          ) : (
-            <ul className="space-y-4">
-              {winners.map((winner, index) => (
-                <li
-                  key={index}
-                  className="flex items-center gap-4 p-3 bg-[#F5F6F5]/30 rounded-lg"
-                >
-                  <img
-                    src={winner.img}
-                    alt={winner.name}
-                    className="w-12 h-12 rounded-full border-2 border-[#A3080C]"
-                  />
-                  <span className="text-xl text-[#1A3C34] font-bold">
-                    {winner.name}
-                  </span>
-                </li>
+              <div
+                className="w-4 h-10 bg-[#A3080C] rounded"
+                style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
+              />
+              <div
+                className="w-0 h-0 border-l-[16px] border-r-[16px] border-t-[24px] border-l-transparent border-r-transparent border-t-[#FFD700]"
+                style={{ filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.35))" }}
+              />
+            </motion.div>
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{ zIndex: 15 }}
+            >
+              {[...Array(8)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute w-4 h-4 rounded-full"
+                  style={{
+                    left: `calc(50% + ${
+                      Math.cos((i * Math.PI * 2) / 8) * 360
+                    }px)`,
+                    top: `calc(50% + ${
+                      Math.sin((i * Math.PI * 2) / 8) * 360
+                    }px)`,
+                    background: ["#FF0000", "#00FF00", "#FFFF00", "#FFD700"][
+                      i % 4
+                    ],
+                    boxShadow: "0 0 10px rgba(255, 255, 255, 0.8)",
+                  }}
+                  animate={{ scale: [1, 1.3, 1] }}
+                  transition={{ repeat: Infinity, duration: 1 + i * 0.2 }}
+                />
               ))}
-            </ul>
-          )}
+            </div>
+          </div>
+          <motion.button
+            onClick={handleReset}
+            className="bg-[#A3080C] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
+            whileHover={{
+              scale: availablePlayers.length > 0 ? 1.1 : 1,
+              boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
+            }}
+            whileTap={{ scale: availablePlayers.length > 0 ? 0.9 : 1 }}
+            disabled={availablePlayers.length === 0}
+          >
+            <i className="fas fa-gift"></i> Spin the Holiday Wheel!
+          </motion.button>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 };
