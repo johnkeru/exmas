@@ -126,7 +126,7 @@ const SpinnerWheel = () => {
     <div
       className="min-h-screen flex p-4 relative overflow-hidden"
       style={{
-        background: "#1A3C34",
+        background: `linear-gradient(to bottom, #1A3C34, #0F2A22)`,
       }}
     >
       {/* Sidebar for winners, shown only when there is at least one winner */}
