@@ -361,8 +361,8 @@ const SpinnerWheel = () => {
         transition={{ duration: 0.6, type: "spring" }}
       >
         <div className="flex flex-col items-center">
-          <h1 className="text-4xl font-bold text-[#1A3C34] flex items-center gap-3 mb-4">
-            <i className="fas fa-tree text-[#A3080C]"></i> Jingle Spin Wheel
+          <h1 className="text-4xl font-bold text-lime-500 flex items-center gap-3 mb-4">
+            Jingle Spin Wheel
           </h1>
           <p className="text-[#4B7043] text-xl mb-6 text-center max-w-md">
             Spin the wheel to light up the Christmas party! Who’s the next
@@ -425,18 +425,6 @@ const SpinnerWheel = () => {
               ))}
             </div>
           </div>
-          <motion.button
-            onClick={handleReset}
-            className="bg-[#A3080C] text-white font-bold py-3 px-6 rounded-lg flex items-center gap-3 hover:bg-[#7A1626] transition mt-6 disabled:opacity-50 disabled:cursor-not-allowed"
-            whileHover={{
-              scale: availablePlayers.length > 0 ? 1.1 : 1,
-              boxShadow: "0 0 15px rgba(255, 215, 0, 0.5)",
-            }}
-            whileTap={{ scale: availablePlayers.length > 0 ? 0.9 : 1 }}
-            disabled={availablePlayers.length === 0}
-          >
-            <i className="fas fa-gift"></i> Spin the Holiday Wheel!
-          </motion.button>
         </div>
       </motion.div>
     </div>
