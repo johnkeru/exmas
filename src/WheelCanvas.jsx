@@ -8,13 +8,14 @@ const WheelCanvas = forwardRef(
 
     useEffect(() => {
       const logoImg = new Image();
-      logoImg.src = "logo.svg";
+      logoImg.src =
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSY3FRCiPniaMBGR5Auc_a1UOZJVpjhNkj57g&s";
       logoImg.onload = () => {
         images.current["logo"] = logoImg;
         draw();
       };
       logoImg.onerror = () => {
-        console.error("Failed to load logo image: logo.svg");
+        console.error("Failed to load logo image: logo");
       };
 
       labels.forEach((label) => {
@@ -114,7 +115,7 @@ const WheelCanvas = forwardRef(
       ctx.fill();
 
       if (images.current["logo"]) {
-        const logoSize = 120; // Increased logo size
+        const logoSize = 150; // Increased logo size
         ctx.save();
         ctx.beginPath();
         ctx.arc(cx, cy, logoSize / 2, 0, Math.PI * 2);

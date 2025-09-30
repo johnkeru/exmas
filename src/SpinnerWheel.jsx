@@ -439,11 +439,10 @@ const SpinnerWheel = () => {
         >
           <div className="flex flex-col items-center">
             <h1 className="text-4xl font-bold text-lime-500 flex items-center gap-3 mb-4">
-              Jingle Spin Wheel
+              Jungle-in moko
             </h1>
             <p className="text-[#4B7043] text-xl mb-6 text-center max-w-md">
-              Spin the wheel to light up the Christmas party! Who’s the next
-              holiday star?
+              WEFSEFEWSFAWEFAW EFAWEFAWESDAWDAS
             </p>
             <div className="relative" style={{ zIndex: 10 }}>
               <WheelCanvas
