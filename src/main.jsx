@@ -7,8 +7,8 @@ import Race from "./Race.jsx";
 
 createRoot(document.getElementById("root")).render(
   <StrictMode>
-    {/* <App /> */}
+    <App />
     {/* <SpinnerWheel /> */}
-    <Race />
+    {/* <Race /> */}
   </StrictMode>
 );

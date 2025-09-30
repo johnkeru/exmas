@@ -17,18 +17,19 @@ const ColorWheel = () => {
   const [winnerData, setWinnerData] = useState(null);
 
   const players = [
-    { name: "Alice", img: "https://i.pravatar.cc/150?img=1" },
-    { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
-    { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
-    { name: "Diana", img: "https://i.pravatar.cc/150?img=4" },
-    { name: "Eve", img: "https://i.pravatar.cc/150?img=5" },
-    { name: "Frank", img: "https://i.pravatar.cc/150?img=6" },
-    { name: "Grace", img: "https://i.pravatar.cc/150?img=7" },
-    { name: "Hank", img: "https://i.pravatar.cc/150?img=8" },
-    { name: "Ivy", img: "https://i.pravatar.cc/150?img=9" },
-    { name: "Jack", img: "https://i.pravatar.cc/150?img=10" },
-    { name: "Karen", img: "https://i.pravatar.cc/150?img=11" },
-    { name: "Leo", img: "https://i.pravatar.cc/150?img=12" },
+    {
+      name: "Baby JOSH",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t39.30808-1/554085623_31754215090859350_623684616158047593_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHZi57JFTCstRRCwvKg-4eIDcdP85gXY2YNx0_zmBdjZnahoMcOSnHKSkoAgaGQPRknTy3akernaKF3bCzRzTY2&_nc_ohc=viqf0rhST5QQ7kNvwEtM_gF&_nc_oc=AdlPJ1jgok5BiSVD2naOgAp23G3X8FGs2B12j0LQ9wwA4xeG2dXdA57vQsDKhYHAUcQ&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=1n5I-pr-hNyPoHB3QXqoLw&oh=00_Afavfs0F-xAU6xLqCKlgpBneliePHAHF73Yx07Rn2sYXvA&oe=68E12D40",
+    },
+    {
+      name: "Baby YUNELE",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.6435-1/74395481_3118341288181280_2341519258137133056_n.jpg?stp=dst-jpg_s160x160_tt6&_nc_cat=111&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHEuXSdHH8Ojt-oh9SWRUQfVnJYhoj_jspWcliGiP-Oyv07PXwJRWKt29uvlOZGo8ouZxfB5J_cZQv7GMQGViVd&_nc_ohc=Ba7WHMIKi1AQ7kNvwFXtgWw&_nc_oc=Adl54VHFgBAaWhK7jqFP_r6X0Jjba5fIk4K0lmxQwqY0u0MVfKk5jEp4yttI3NOEv54&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=LZ3nklWyu3Re_AQVLI1YUA&oh=00_AfZAbYLGk4P-4FGeim2Pxp3Vw0xjQ_4rxff-Pby713SyAg&oe=6902CBEC",
+    },
+    {
+      name: "ONION EDRA",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/553489168_683943051382442_2497790801776818444_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeENbhq0spVXr2eXhzFWviCa9NDymChrsYz00PKYKGuxjNmbIQhIeBHPuin0kqEJfpJv92To4jguwu-QhRNGkLMT&_nc_ohc=dyGctOqe_AEQ7kNvwE31xYB&_nc_oc=Adle3CILFME3mdmpXvaLkN0Y1k4eQIlZQq2DSsGM5hnIpbPLmpTBB2m11Uuoi9DvmvU&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QGzpy-Hf04qBlJ6hV9SkfQXOw3KI6Lyqsny7EVULYiixw&oe=6902D5BD",
+    },
+    { name: "DRIEEE", img: "https://i.pravatar.cc/150?img=4" },
   ];
 
   const congratsMessages = [
@@ -239,7 +240,7 @@ const ColorWheel = () => {
       <Snowfall snowflakeCount={150} style={{ pointerEvents: "none" }} />
 
       <h1 className="absolute top-8 text-4xl font-extrabold text-white drop-shadow-lg">
-        🎄 Holiday Spin Wheel 🎅
+        🎄 HOLY FUCKING Wheel 🎅
       </h1>
 
       <div

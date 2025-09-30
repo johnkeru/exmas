@@ -2,7 +2,10 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 
 const initialPlayers = [
-  { name: "Alice", img: "https://i.pravatar.cc/150?img=1" },
+  {
+    name: "Baby JOSH",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t39.30808-1/554085623_31754215090859350_623684616158047593_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHZi57JFTCstRRCwvKg-4eIDcdP85gXY2YNx0_zmBdjZnahoMcOSnHKSkoAgaGQPRknTy3akernaKF3bCzRzTY2&_nc_ohc=viqf0rhST5QQ7kNvwEtM_gF&_nc_oc=AdlPJ1jgok5BiSVD2naOgAp23G3X8FGs2B12j0LQ9wwA4xeG2dXdA57vQsDKhYHAUcQ&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=1n5I-pr-hNyPoHB3QXqoLw&oh=00_Afavfs0F-xAU6xLqCKlgpBneliePHAHF73Yx07Rn2sYXvA&oe=68E12D40",
+  },
   { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
   { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
   { name: "Diana", img: "https://i.pravatar.cc/150?img=4" },
