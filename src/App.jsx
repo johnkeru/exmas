@@ -22,14 +22,33 @@ const ColorWheel = () => {
       img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t39.30808-1/554085623_31754215090859350_623684616158047593_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHZi57JFTCstRRCwvKg-4eIDcdP85gXY2YNx0_zmBdjZnahoMcOSnHKSkoAgaGQPRknTy3akernaKF3bCzRzTY2&_nc_ohc=viqf0rhST5QQ7kNvwEtM_gF&_nc_oc=AdlPJ1jgok5BiSVD2naOgAp23G3X8FGs2B12j0LQ9wwA4xeG2dXdA57vQsDKhYHAUcQ&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=1n5I-pr-hNyPoHB3QXqoLw&oh=00_Afavfs0F-xAU6xLqCKlgpBneliePHAHF73Yx07Rn2sYXvA&oe=68E12D40",
     },
     {
-      name: "Baby YUNELE",
+      name: "YUNELE",
       img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.6435-1/74395481_3118341288181280_2341519258137133056_n.jpg?stp=dst-jpg_s160x160_tt6&_nc_cat=111&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHEuXSdHH8Ojt-oh9SWRUQfVnJYhoj_jspWcliGiP-Oyv07PXwJRWKt29uvlOZGo8ouZxfB5J_cZQv7GMQGViVd&_nc_ohc=Ba7WHMIKi1AQ7kNvwFXtgWw&_nc_oc=Adl54VHFgBAaWhK7jqFP_r6X0Jjba5fIk4K0lmxQwqY0u0MVfKk5jEp4yttI3NOEv54&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=LZ3nklWyu3Re_AQVLI1YUA&oh=00_AfZAbYLGk4P-4FGeim2Pxp3Vw0xjQ_4rxff-Pby713SyAg&oe=6902CBEC",
     },
     {
-      name: "ONION EDRA",
+      name: "Onion EDRA 🧅",
       img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/553489168_683943051382442_2497790801776818444_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeENbhq0spVXr2eXhzFWviCa9NDymChrsYz00PKYKGuxjNmbIQhIeBHPuin0kqEJfpJv92To4jguwu-QhRNGkLMT&_nc_ohc=dyGctOqe_AEQ7kNvwE31xYB&_nc_oc=Adle3CILFME3mdmpXvaLkN0Y1k4eQIlZQq2DSsGM5hnIpbPLmpTBB2m11Uuoi9DvmvU&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QGzpy-Hf04qBlJ6hV9SkfQXOw3KI6Lyqsny7EVULYiixw&oe=6902D5BD",
     },
-    { name: "DRIEEE", img: "https://i.pravatar.cc/150?img=4" },
+    {
+      name: "EDRA 😠",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/552828593_1151072656898068_5039045652517267154_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEKVgViMQ4iihB7-DxTkH0HtSEEnvFjBvi1IQSe8WMG-OqUNZLXzOrIFPHIlc5pLnnjht0OF6ACBeFmIRVXxSvp&_nc_ohc=8a5iDEkxNj4Q7kNvwEGeCxe&_nc_oc=AdkBAR69dg2m61okes4wQVuywXlWVNxoEnAxtQ7JsvPug-LRz-CXu8nfxtG8SFmZdk0&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QFzg4KiX9XMp0nXbFq1PSI1_bWqu9ssWMdpBQ5jDX7GEQ&oe=6902D90B",
+    },
+    {
+      name: "EDRA TIGAS",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/545716411_1483708335993934_3485407590343765649_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEJwfQojNAIku37FUR4fXZhnJeKvSOymVqcl4q9I7KZWhd4-xvYeK9Z2t30YOjSd-x8qxewV8MT8EgrM9dpHUQL&_nc_ohc=NiqM5u9NJFYQ7kNvwFCshQm&_nc_oc=AdmLYuvMIqmjjjrlxs8N3oVDQ1UEWEjqnma13eHkfVVVHmwmQ2e6cL273uc4c2yA8HU&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QGynPYhN4smvoCGdi2-4Q84uDwVNj4sXinJfeBLf_nWmA&oe=6902CD67",
+    },
+    {
+      name: "EDRA",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/535852453_1486254975886884_7987964586178762070_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeG9D6bU9J9PeT-8nVxRdEephpKnMbIAUwuGkqcxsgBTCwRNxaTsG3p7yCGCGL2ymCZOs5MSR1QygWdcI8zMz4zM&_nc_ohc=kM5XQ3lOgCAQ7kNvwGGtxNH&_nc_oc=AdlmAls7uSzV8S2risd60VelWssasFeNYBzqvzA0Vq-21jlwJzTMwi08shxFgOimbXE&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QEnLNXGsMaMCseUW1AMDOZHDH1cOjnVuPWcfd9hKk2gTg&oe=6902C9FD",
+    },
+    {
+      name: "MEOWNG",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/528974807_1225300592682513_7789263775756234938_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFSgn_1Of4rK5vL2eC4zYP-eWnc-qitb5Z5adz6qK1vlgoCS765XGaDanSKbRL5-GhtE9pt54j4FDUYw-JcxmD5&_nc_ohc=VVWgpViiv6UQ7kNvwGaVzEq&_nc_oc=Adk9mvtWAdeSnDneOPZfzL3JsMo_TYxNR4SDCwnQQFjcsfPG8oHsOkpgt_5udap-Zww&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QFWYEaygA3fnMBSAIjXKW4JQlgNW0JVbJgb2NnPjMflmQ&oe=6902F525",
+    },
+    {
+      name: "MEETING",
+      img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/551342917_1322303979622967_2664223213913926710_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEYhaxGf0kR6ce30fGWespJffcLsKeheSJ99wuwp6F5IgzP6vzAUGNLLoqNmLTmrwZo6OGy6iAX9g2efuXIAPcR&_nc_ohc=wY7VGHzOC6sQ7kNvwGcMIds&_nc_oc=AdkuPDOa57sw4zaSKJPxABm_C1QEcFxxrSSAQWa7Tc_O6_AAgE_n6wGqCw5f7PegQI4&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QHxyX73siLbgFfZVyNDvCcpDB-dQVwBgFyTSRpx7xElfg&oe=6902D8C7",
+    },
   ];
 
   const congratsMessages = [
@@ -275,64 +294,35 @@ const ColorWheel = () => {
       <AnimatePresence>
         {winner && winnerData && (
           <motion.div
-            key="winner-popup"
-            initial={{ opacity: 0, scale: 0.3, y: 100 }}
+            key="memorial-popup"
+            initial={{ opacity: 0, scale: 0.8, y: 50 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.3, y: -100 }}
-            transition={{ type: "spring", stiffness: 500, damping: 25 }}
+            exit={{ opacity: 0, scale: 0.8, y: -50 }}
+            transition={{ duration: 0.6, ease: "easeInOut" }}
             className="fixed inset-0 flex items-center justify-center bg-black/80 z-50"
           >
-            <Confetti
-              width={window.innerWidth}
-              height={window.innerHeight}
-              recycle={false}
-              numberOfPieces={300}
-            />
-            <motion.div
-              className="bg-gradient-to-br from-[#d9534f] to-[#e1b12c] rounded-3xl p-12 flex flex-col items-center gap-6 shadow-[0_0_30px_rgba(255,255,255,0.9)] border-6 border-white"
-              animate={{ scale: [1, 1.1, 1] }}
-              transition={{
-                repeat: Infinity,
-                duration: 1.5,
-                ease: "easeInOut",
-              }}
-            >
-              <div className="flex items-center gap-6">
-                <img
-                  src={winnerData.img}
-                  alt={winnerData.name}
-                  className="w-48 h-48 rounded-full border-6 border-[#264524] shadow-lg"
-                />
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1], y: [0, -10, 0] }}
-                  transition={{
-                    repeat: Infinity,
-                    duration: 0.8,
-                    ease: "easeInOut",
-                  }}
-                >
-                  <FaTrophy className="text-[#ffd700] w-20 h-20 drop-shadow-lg" />
-                </motion.div>
-              </div>
-              <h2 className="text-5xl font-extrabold text-white font-['Bangers'] drop-shadow-md">
-                {congratsMessages[
-                  Math.floor(Math.random() * congratsMessages.length)
-                ].replace("{name}", winnerData.name)}
+            <motion.div className="bg-gradient-to-br from-gray-900 to-gray-700 rounded-3xl p-12 flex flex-col items-center gap-6 shadow-[0_0_30px_rgba(255,255,255,0.3)] border-4 border-gray-300">
+              <img
+                src={winnerData.img}
+                alt={winnerData.name}
+                className="w-[510px] h-[510px] rounded-full border-4 border-gray-500 shadow-xl object-cover"
+              />
+
+              <h2 className="text-4xl font-bold text-white font-serif drop-shadow-md">
+                In Loving Memory of {winnerData.name}
               </h2>
-              <p className="text-2xl text-white font-['Bangers'] italic">
-                {
-                  congratsSubtexts[
-                    Math.floor(Math.random() * congratsSubtexts.length)
-                  ]
-                }
+
+              <p className="text-lg text-gray-200 italic font-serif text-center">
+                {winnerData.message || "Forever in our hearts"}
               </p>
+
               <motion.button
-                whileHover={{ scale: 1.3, rotate: 5 }}
-                whileTap={{ scale: 0.9, rotate: -5 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => setWinner(null)}
-                className="mt-6 bg-[#264524] text-white px-10 py-4 rounded-xl shadow-md font-bold font-['Bangers'] text-xl"
+                className="mt-6 bg-gray-800 text-white px-8 py-3 rounded-lg shadow-md font-semibold text-lg"
               >
-                Spin Again, Champion!
+                Close
               </motion.button>
             </motion.div>
           </motion.div>

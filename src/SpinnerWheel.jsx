@@ -8,17 +8,34 @@ const initialPlayers = [
     name: "Baby JOSH",
     img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t39.30808-1/554085623_31754215090859350_623684616158047593_n.jpg?stp=dst-jpg_s200x200_tt6&_nc_cat=108&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHZi57JFTCstRRCwvKg-4eIDcdP85gXY2YNx0_zmBdjZnahoMcOSnHKSkoAgaGQPRknTy3akernaKF3bCzRzTY2&_nc_ohc=viqf0rhST5QQ7kNvwEtM_gF&_nc_oc=AdlPJ1jgok5BiSVD2naOgAp23G3X8FGs2B12j0LQ9wwA4xeG2dXdA57vQsDKhYHAUcQ&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=1n5I-pr-hNyPoHB3QXqoLw&oh=00_Afavfs0F-xAU6xLqCKlgpBneliePHAHF73Yx07Rn2sYXvA&oe=68E12D40",
   },
-  { name: "Bob", img: "https://i.pravatar.cc/150?img=2" },
-  { name: "Charlie", img: "https://i.pravatar.cc/150?img=3" },
-  { name: "Diana", img: "https://i.pravatar.cc/150?img=4" },
-  { name: "Eve", img: "https://i.pravatar.cc/150?img=5" },
-  { name: "Frank", img: "https://i.pravatar.cc/150?img=6" },
-  { name: "Grace", img: "https://i.pravatar.cc/150?img=7" },
-  { name: "Hank", img: "https://i.pravatar.cc/150?img=8" },
-  { name: "Ivy", img: "https://i.pravatar.cc/150?img=9" },
-  { name: "Jack", img: "https://i.pravatar.cc/150?img=10" },
-  { name: "Karen", img: "https://i.pravatar.cc/150?img=11" },
-  { name: "Leo", img: "https://i.pravatar.cc/150?img=12" },
+  {
+    name: "YUNELE",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.6435-1/74395481_3118341288181280_2341519258137133056_n.jpg?stp=dst-jpg_s160x160_tt6&_nc_cat=111&ccb=1-7&_nc_sid=e99d92&_nc_eui2=AeHEuXSdHH8Ojt-oh9SWRUQfVnJYhoj_jspWcliGiP-Oyv07PXwJRWKt29uvlOZGo8ouZxfB5J_cZQv7GMQGViVd&_nc_ohc=Ba7WHMIKi1AQ7kNvwFXtgWw&_nc_oc=Adl54VHFgBAaWhK7jqFP_r6X0Jjba5fIk4K0lmxQwqY0u0MVfKk5jEp4yttI3NOEv54&_nc_zt=24&_nc_ht=scontent.fmnl10-1.fna&_nc_gid=LZ3nklWyu3Re_AQVLI1YUA&oh=00_AfZAbYLGk4P-4FGeim2Pxp3Vw0xjQ_4rxff-Pby713SyAg&oe=6902CBEC",
+  },
+  {
+    name: "Onion EDRA 🧅",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/553489168_683943051382442_2497790801776818444_n.jpg?_nc_cat=106&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeENbhq0spVXr2eXhzFWviCa9NDymChrsYz00PKYKGuxjNmbIQhIeBHPuin0kqEJfpJv92To4jguwu-QhRNGkLMT&_nc_ohc=dyGctOqe_AEQ7kNvwE31xYB&_nc_oc=Adle3CILFME3mdmpXvaLkN0Y1k4eQIlZQq2DSsGM5hnIpbPLmpTBB2m11Uuoi9DvmvU&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QGzpy-Hf04qBlJ6hV9SkfQXOw3KI6Lyqsny7EVULYiixw&oe=6902D5BD",
+  },
+  {
+    name: "EDRA 😠",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/552828593_1151072656898068_5039045652517267154_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEKVgViMQ4iihB7-DxTkH0HtSEEnvFjBvi1IQSe8WMG-OqUNZLXzOrIFPHIlc5pLnnjht0OF6ACBeFmIRVXxSvp&_nc_ohc=8a5iDEkxNj4Q7kNvwEGeCxe&_nc_oc=AdkBAR69dg2m61okes4wQVuywXlWVNxoEnAxtQ7JsvPug-LRz-CXu8nfxtG8SFmZdk0&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QFzg4KiX9XMp0nXbFq1PSI1_bWqu9ssWMdpBQ5jDX7GEQ&oe=6902D90B",
+  },
+  {
+    name: "EDRA TIGAS",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/545716411_1483708335993934_3485407590343765649_n.jpg?_nc_cat=102&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEJwfQojNAIku37FUR4fXZhnJeKvSOymVqcl4q9I7KZWhd4-xvYeK9Z2t30YOjSd-x8qxewV8MT8EgrM9dpHUQL&_nc_ohc=NiqM5u9NJFYQ7kNvwFCshQm&_nc_oc=AdmLYuvMIqmjjjrlxs8N3oVDQ1UEWEjqnma13eHkfVVVHmwmQ2e6cL273uc4c2yA8HU&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QGynPYhN4smvoCGdi2-4Q84uDwVNj4sXinJfeBLf_nWmA&oe=6902CD67",
+  },
+  {
+    name: "EDRA",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/535852453_1486254975886884_7987964586178762070_n.jpg?_nc_cat=107&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeG9D6bU9J9PeT-8nVxRdEephpKnMbIAUwuGkqcxsgBTCwRNxaTsG3p7yCGCGL2ymCZOs5MSR1QygWdcI8zMz4zM&_nc_ohc=kM5XQ3lOgCAQ7kNvwGGtxNH&_nc_oc=AdlmAls7uSzV8S2risd60VelWssasFeNYBzqvzA0Vq-21jlwJzTMwi08shxFgOimbXE&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QEnLNXGsMaMCseUW1AMDOZHDH1cOjnVuPWcfd9hKk2gTg&oe=6902C9FD",
+  },
+  {
+    name: "MEOWNG",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/528974807_1225300592682513_7789263775756234938_n.jpg?_nc_cat=104&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeFSgn_1Of4rK5vL2eC4zYP-eWnc-qitb5Z5adz6qK1vlgoCS765XGaDanSKbRL5-GhtE9pt54j4FDUYw-JcxmD5&_nc_ohc=VVWgpViiv6UQ7kNvwGaVzEq&_nc_oc=Adk9mvtWAdeSnDneOPZfzL3JsMo_TYxNR4SDCwnQQFjcsfPG8oHsOkpgt_5udap-Zww&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QFWYEaygA3fnMBSAIjXKW4JQlgNW0JVbJgb2NnPjMflmQ&oe=6902F525",
+  },
+  {
+    name: "MEETING",
+    img: "https://scontent.fmnl10-1.fna.fbcdn.net/v/t1.15752-9/551342917_1322303979622967_2664223213913926710_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=9f807c&_nc_eui2=AeEYhaxGf0kR6ce30fGWespJffcLsKeheSJ99wuwp6F5IgzP6vzAUGNLLoqNmLTmrwZo6OGy6iAX9g2efuXIAPcR&_nc_ohc=wY7VGHzOC6sQ7kNvwGcMIds&_nc_oc=AdkuPDOa57sw4zaSKJPxABm_C1QEcFxxrSSAQWa7Tc_O6_AAgE_n6wGqCw5f7PegQI4&_nc_zt=23&_nc_ht=scontent.fmnl10-1.fna&oh=03_Q7cD3QHxyX73siLbgFfZVyNDvCcpDB-dQVwBgFyTSRpx7xElfg&oe=6902D8C7",
+  },
 ];
 
 const SpinnerWheel = () => {
@@ -279,7 +296,7 @@ const SpinnerWheel = () => {
               transition={{ duration: 0.5 }}
             >
               <motion.div
-                className="bg-white rounded-3xl p-12 shadow-2xl max-w-xl w-full"
+                className="bg-white rounded-3xl p-12 shadow-2xl  w-[50vw]"
                 style={{
                   fontFamily: "'Mountains of Christmas', cursive",
                   background: `linear-gradient(145deg, #FEF9E6 0%, #FFF0BA 100%)`,
@@ -327,7 +344,7 @@ const SpinnerWheel = () => {
                     <motion.img
                       src={winner.img}
                       alt={winner.name}
-                      className="w-64 h-64 rounded-full border-6 border-[#FFD700] shadow-lg"
+                      className="w-[600px] h-[600px] rounded-full border-6 border-[#FFD700] shadow-lg"
                       animate={{
                         y: [0, -20, 0],
                         scale: [1, 1.1, 1],
